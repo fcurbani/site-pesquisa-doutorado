@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linha do tempo da Biologia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #EEF3EF;
+    --ink: #1C2B22;
+    --ink-soft: #4B5A50;
+    --card: #FFFFFF;
+    --line: #C9D3CB;
+    --era-renascimento: #3B6E4F;
+    --era-revolucao: #2B6E76;
+    --era-iluminismo: #A67C2E;
+    --era-xix: #9C4A2E;
+    --era-viradaxx: #33507E;
+    --era-molecular: #6B4A82;
+    --era-engenharia: #1E7F8C;
+    --era-xxi: #8C4A6B;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 0 24px 100px; }
+
+  .hero { text-align: center; padding: 76px 24px 40px; }
+  .hero-eyebrow {
+    font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-soft); margin: 0 0 18px;
+  }
+  .hero h1 {
+    font-family: 'Source Serif 4', serif; font-weight: 700;
+    font-size: 44px; line-height: 1.15; margin: 0 0 14px;
+  }
+  .hero p {
+    font-size: 16px; color: var(--ink-soft); max-width: 520px;
+    margin: 0 auto; line-height: 1.6;
+  }
+  .hero-hint {
+    font-size: 12.5px; color: var(--ink-soft); margin-top: 14px;
+    opacity: 0.85;
+  }
+  .helix { display: block; margin: 30px auto 0; }
+
+  .era { position: relative; margin-top: 64px; }
+  .era-header {
+    display: flex; align-items: baseline; gap: 14px;
+    margin-bottom: 28px; padding-left: 2px;
+  }
+  .era-dot {
+    width: 11px; height: 11px; border-radius: 50%;
+    flex-shrink: 0; transform: translateY(-2px);
+  }
+  .era-header h2 {
+    font-family: 'Source Serif 4', serif; font-weight: 600;
+    font-size: 22px; margin: 0;
+  }
+  .era-header span { font-size: 13px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+
+  .spine { position: relative; border-left: 1.5px solid var(--line); margin-left: 5px; padding-left: 28px; }
+  .entry {
+    position: relative; padding: 0 0 14px;
+    opacity: 0; transform: translateY(10px);
+    animation: rise 0.5s ease forwards;
+  }
+  .entry:last-child { padding-bottom: 4px; }
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce) { .entry { animation: none; opacity: 1; transform: none; } }
+  .entry::before {
+    content: ''; position: absolute; left: -33.5px; top: 20px;
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--dot-color, var(--ink-soft));
+    box-shadow: 0 0 0 4px var(--bg);
+  }
+
+  .entry-card {
+    background: var(--card); border: 0.5px solid var(--line);
+    border-radius: 10px; overflow: hidden;
+  }
+  .entry-trigger {
+    display: flex; align-items: flex-start; gap: 12px;
+    width: 100%; padding: 14px 16px; background: none; border: none;
+    text-align: left; cursor: pointer; font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .entry-trigger:hover { background: var(--bg); }
+  .entry-main { flex: 1; min-width: 0; }
+  .entry-year {
+    display: inline-block; font-size: 12.5px; font-weight: 600;
+    color: var(--dot-color, var(--ink-soft)); margin-bottom: 6px; letter-spacing: 0.02em;
+  }
+  .entry-title { font-size: 15px; line-height: 1.45; margin: 0 0 4px; color: var(--ink); }
+  .entry-who { font-size: 13px; color: var(--ink-soft); margin: 0; }
+  .flag-icon {
+    display: inline-block; width: 16px; height: auto; vertical-align: -2px;
+    margin-right: 5px; border-radius: 2px; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.15);
+  }
+  .chevron {
+    flex-shrink: 0; width: 18px; height: 18px; margin-top: 4px;
+    color: var(--ink-soft); transition: transform 0.25s ease;
+  }
+  .entry.open .chevron { transform: rotate(180deg); }
+
+  .entry-detail {
+    max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+  }
+  .entry.open .entry-detail { max-height: 260px; }
+  .entry-detail-inner {
+    padding: 0 16px 16px 16px; border-top: 0.5px solid var(--line); margin-top: 0;
+  }
+  .entry-summary {
+    font-size: 14px; line-height: 1.65; color: var(--ink-soft);
+    margin: 14px 0 12px;
+  }
+  .entry-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 500; color: var(--dot-color, var(--ink));
+    text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px;
+  }
+  .entry-link:hover { opacity: 0.75; }
+  .entry-link svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+  footer {
+    text-align: center; margin-top: 70px; padding-top: 24px;
+    border-top: 0.5px solid var(--line); font-size: 12.5px; color: var(--ink-soft);
+  }
+
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 32px; }
+    .wrap { padding: 0 16px 80px; }
+  }
+</style>
+</head>
+<body>
+<div style="max-width:900px;margin:0 auto;padding:20px 24px 0;display:flex;gap:16px;">
+  <a href="biologia-index.html" style="font-size:13px;color:#4B5768;text-decoration:none;">← Biologia</a>
+  <a href="index.html" style="font-size:13px;color:#4B5768;text-decoration:none;">Início do site</a>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <p class="hero-eyebrow">Do Renascimento aos dias atuais</p>
+    <h1>Linha do tempo da Biologia</h1>
+    <p>Da anatomia observada a olho nu à edição do genoma: os marcos que moldaram como entendemos a vida.</p>
+    <svg class="helix" width="180" height="60" viewBox="0 0 180 60" fill="none">
+      <path d="M4 6 C 40 6, 40 54, 76 54 S 148 6, 176 6" stroke="#3B6E4F" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M4 54 C 40 54, 40 6, 76 6 S 148 54, 176 54" stroke="#8C4A6B" stroke-width="1.6" stroke-linecap="round"/>
+      <line x1="16" y1="14" x2="16" y2="46" stroke="#C9D3CB" stroke-width="1"/>
+      <line x1="46" y1="9" x2="46" y2="51" stroke="#C9D3CB" stroke-width="1"/>
+      <line x1="90" y1="9" x2="90" y2="51" stroke="#C9D3CB" stroke-width="1"/>
+      <line x1="134" y1="9" x2="134" y2="51" stroke="#C9D3CB" stroke-width="1"/>
+      <line x1="164" y1="14" x2="164" y2="46" stroke="#C9D3CB" stroke-width="1"/>
+    </svg>
+    <p class="hero-hint">Toque em um marco para ver um resumo e um link para saber mais</p>
+  </div>
+
+  <div id="timeline"></div>
+
+  <footer>61 marcos · elaborado a partir da conversa e do documento enviado · links externos para a Wikipédia</footer>
+</div>
+
+<script>
+const data = [
+  { era: "O Renascimento", range: "séc. XV–XVI", color: "var(--era-renascimento)", items: [
+    ["Final séc. XV", "Dissecações e desenhos anatômicos precisos", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDA4QzQ1Ii8+PHJlY3QgeD0iMjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0NEMjEyQSIvPjwvc3ZnPg==' alt=''> Leonardo da Vinci",
+      "Entre o fim do século XV e o início do XVI, Leonardo dissecou corpos humanos e de animais para desenhar músculos, ossos e órgãos com um realismo inédito para a época. Seus cadernos anatômicos só foram compilados e reconhecidos séculos depois, mas anteciparam boa parte do que Vesalius formalizaria em 1543.",
+      "https://en.wikipedia.org/wiki/Leonardo_da_Vinci"],
+    ["1543", "De Humani Corporis Fabrica — funda a anatomia moderna", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAwIi8+PHJlY3QgeD0iMTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0ZEREEyNCIvPjxyZWN0IHg9IjIwIiB3aWR0aD0iMTAiIGhlaWdodD0iMjAiIGZpbGw9IiNFRjMzNDAiLz48L3N2Zz4=' alt=''> Andreas Vesalius",
+      "O anatomista flamengo publicou De Humani Corporis Fabrica, tratado baseado em dissecações próprias que corrigiu diversos erros herdados de Galeno, que por séculos baseou a anatomia humana no estudo de animais. A obra é considerada o marco fundador da anatomia moderna.",
+      "https://en.wikipedia.org/wiki/Andreas_Vesalius"],
+  ]},
+  { era: "A Revolução Científica", range: "séc. XVII", color: "var(--era-revolucao)", items: [
+    ["1628", "Descrição da circulação sanguínea", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAyNDdEIi8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNMTUsMCBWMjAgTTAsMTAgSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIvPjxwYXRoIGQ9Ik0xNSwwIFYyMCBNMCwxMCBIMzAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIzLjIiLz48L3N2Zz4=' alt=''> William Harvey",
+      "William Harvey demonstrou, por meio de experimentos anatômicos, que o sangue circula continuamente pelo corpo, impulsionado pelo coração, e não é consumido e recriado como se pensava. A descoberta, publicada em De Motu Cordis, mudou a compreensão da fisiologia humana.",
+      "https://en.wikipedia.org/wiki/William_Harvey"],
+    ["1665", "Observação e nomeação das células (cortiça)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAyNDdEIi8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNMTUsMCBWMjAgTTAsMTAgSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIvPjxwYXRoIGQ9Ik0xNSwwIFYyMCBNMCwxMCBIMzAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIzLjIiLz48L3N2Zz4=' alt=''> Robert Hooke",
+      "Ao observar uma fina lâmina de cortiça em um microscópio rudimentar, Robert Hooke viu pequenas cavidades organizadas que lembravam celas de monges — e as batizou de \"células\". O termo, criado para descrever apenas a estrutura vegetal, acabou se tornando a unidade fundamental de toda a biologia.",
+      "https://en.wikipedia.org/wiki/Micrographia"],
+    ["~1670–1680", "Primeira observação de microrganismos (\"animálculos\")", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMjE0NjhCIi8+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjEzLjMzIiBmaWxsPSIjZmZmIi8+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiNBRTFDMjgiLz48L3N2Zz4=' alt=''> Antonie van Leeuwenhoek",
+      "Comerciante de tecidos e cientista autodidata, Antonie van Leeuwenhoek aperfeiçoou o microscópio de lente única a ponto de observar, pela primeira vez, bactérias, protozoários e espermatozoides. Suas cartas à Royal Society de Londres abriram as portas da microbiologia.",
+      "https://en.wikipedia.org/wiki/Antonie_van_Leeuwenhoek"],
+  ]},
+  { era: "O Iluminismo", range: "séc. XVIII", color: "var(--era-iluminismo)", items: [
+    ["1735", "Sistema de classificação binomial (Systema Naturae)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDA2QUE3Ii8+PHJlY3QgeD0iMTAiIHdpZHRoPSI0IiBoZWlnaHQ9IjIwIiBmaWxsPSIjRkVDQzAwIi8+PHJlY3QgeT0iOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjQiIGZpbGw9IiNGRUNDMDAiLz48L3N2Zz4=' alt=''> Carl Linnaeus (Lineu)",
+      "O naturalista sueco Carl Linnaeus propôs um sistema hierárquico para classificar todos os seres vivos, com nomes científicos padronizados em latim (gênero + espécie). O Systema Naturae permitiu, pela primeira vez, que cientistas do mundo inteiro falassem a mesma língua ao descrever a natureza.",
+      "https://en.wikipedia.org/wiki/Systema_Naturae"],
+    ["Fins séc. XVIII", "Experimentos que enfraquecem a geração espontânea", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDA4QzQ1Ii8+PHJlY3QgeD0iMjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0NEMjEyQSIvPjwvc3ZnPg==' alt=''> Lazzaro Spallanzani",
+      "Lazzaro Spallanzani realizou experimentos controlados que contestaram a teoria da geração espontânea — a ideia de que seres vivos simples surgiam diretamente de matéria não viva. Seu trabalho preparou o terreno para as provas definitivas de Pasteur, quase um século depois.",
+      "https://en.wikipedia.org/wiki/Lazzaro_Spallanzani"],
+    ["1796", "Primeira vacina da história (varíola)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAyNDdEIi8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNMTUsMCBWMjAgTTAsMTAgSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIvPjxwYXRoIGQ9Ik0xNSwwIFYyMCBNMCwxMCBIMzAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIzLjIiLz48L3N2Zz4=' alt=''> Edward Jenner",
+      "Edward Jenner observou que ordenhadoras que contraíam a varíola bovina (cowpox), uma doença leve, pareciam imunes à varíola humana, muito mais letal. Em 1796, ele inoculou um menino com material da varíola bovina e depois o expôs à varíola humana sem que ele adoecesse — nascia assim a primeira vacina da história.",
+      "https://en.wikipedia.org/wiki/Edward_Jenner"],
+  ]},
+  { era: "O século das três grandes teorias", range: "séc. XIX", color: "var(--era-xix)", items: [
+    ["1838–1839", "Teoria celular: todos os seres vivos são feitos de células", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiMwMDAiLz48cmVjdCB5PSI2LjY3IiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0REMDAwMCIvPjxyZWN0IHk9IjEzLjMzIiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0ZGQ0UwMCIvPjwvc3ZnPg==' alt=''> Matthias Schleiden e Theodor Schwann",
+      "O botânico Matthias Schleiden e o zoólogo Theodor Schwann uniram observações independentes sobre plantas e animais para propor que todos os seres vivos são compostos por células. Foi a primeira formulação da teoria celular, um dos pilares da biologia moderna.",
+      "https://en.wikipedia.org/wiki/Cell_theory"],
+    ["1855", "\"Omnis cellula e cellula\" — completa a teoria celular", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiMwMDAiLz48cmVjdCB5PSI2LjY3IiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0REMDAwMCIvPjxyZWN0IHk9IjEzLjMzIiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0ZGQ0UwMCIvPjwvc3ZnPg==' alt=''> Rudolf Virchow",
+      "O patologista alemão Rudolf Virchow completou a teoria celular com a máxima \"toda célula se origina de outra célula preexistente\". Essa ideia refutou de vez a possibilidade de células surgirem espontaneamente a partir de matéria não viva.",
+      "https://en.wikipedia.org/wiki/Rudolf_Virchow"],
+    ["1859", "Teoria da evolução por seleção natural", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAyNDdEIi8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNMTUsMCBWMjAgTTAsMTAgSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIvPjxwYXRoIGQ9Ik0xNSwwIFYyMCBNMCwxMCBIMzAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIzLjIiLz48L3N2Zz4=' alt=''> Charles Darwin (e Alfred Russel Wallace)",
+      "Em A Origem das Espécies, Charles Darwin — que desenvolveu a teoria de forma paralela e independente a Alfred Russel Wallace — propôs que as espécies mudam ao longo do tempo por seleção natural: indivíduos com características mais vantajosas para o ambiente têm mais chances de sobreviver e deixar descendentes.",
+      "https://en.wikipedia.org/wiki/On_the_Origin_of_Species"],
+    ["Década de 1860", "Teoria dos germes, refutação da geração espontânea, vacinas", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDA1NUE0Ii8+PHJlY3QgeD0iMjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0VGNDEzNSIvPjwvc3ZnPg==' alt=''> Louis Pasteur",
+      "Louis Pasteur provou experimentalmente que micro-organismos não surgem espontaneamente, mas vêm de outros micro-organismos já existentes, e demonstrou que germes específicos causam doenças específicas. Seu trabalho também deu origem às primeiras vacinas modernas, como a da raiva.",
+      "https://en.wikipedia.org/wiki/Louis_Pasteur"],
+    ["1865–1866", "Leis da hereditariedade (experimentos com ervilhas)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMTAiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI0Q3MTQxQSIvPjxwYXRoIGQ9Ik0wLDAgTDE1LDEwIEwwLDIwIFoiIGZpbGw9IiMxMTQ1N0UiLz48L3N2Zz4=' alt=''> Gregor Mendel",
+      "Cultivando ervilhas em seu jardim, o monge Gregor Mendel identificou padrões matemáticos precisos na transmissão de características entre gerações, descrevendo o que hoje chamamos de genes. Seu trabalho, publicado em 1866, foi praticamente ignorado até ser redescoberto em 1900.",
+      "https://en.wikipedia.org/wiki/Gregor_Mendel"],
+    ["1866", "Cunha o termo \"ecologia\" e ilustra a árvore da vida", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiMwMDAiLz48cmVjdCB5PSI2LjY3IiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0REMDAwMCIvPjxyZWN0IHk9IjEzLjMzIiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0ZGQ0UwMCIvPjwvc3ZnPg==' alt=''> Ernst Haeckel",
+      "O zoólogo alemão Ernst Haeckel cunhou o termo \"ecologia\" para descrever o estudo das relações entre os seres vivos e seu ambiente, além de termos como \"filo\" e \"filogenia\". Também ficou famoso por suas ilustrações detalhadas da árvore da vida e de milhares de espécies marinhas.",
+      "https://en.wikipedia.org/wiki/Ernst_Haeckel"],
+    ["1875–1876", "Descoberta da fecundação (fusão dos núcleos)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiMwMDAiLz48cmVjdCB5PSI2LjY3IiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0REMDAwMCIvPjxyZWN0IHk9IjEzLjMzIiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0ZGQ0UwMCIvPjwvc3ZnPg==' alt=''> Oscar Hertwig",
+      "Estudando ouriços-do-mar, Oscar Hertwig observou pela primeira vez a fusão do núcleo de um espermatozoide com o núcleo de um óvulo durante a fecundação. A descoberta encerrou séculos de especulação e mostrou que a fecundação é a união genética de duas células.",
+      "https://en.wikipedia.org/wiki/Oscar_Hertwig"],
+    ["1876–1884", "Postulados que ligam micróbios a doenças específicas", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiMwMDAiLz48cmVjdCB5PSI2LjY3IiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0REMDAwMCIvPjxyZWN0IHk9IjEzLjMzIiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0ZGQ0UwMCIvPjwvc3ZnPg==' alt=''> Robert Koch",
+      "O médico Robert Koch estabeleceu um conjunto de critérios rigorosos — os postulados de Koch — para provar que um micro-organismo específico é a causa de uma doença específica. Seus métodos se tornaram o padrão-ouro da microbiologia médica por mais de um século.",
+      "https://en.wikipedia.org/wiki/Robert_Koch"],
+    ["1882", "Descoberta da fagocitose (imunidade inata)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDA1N0I3Ii8+PHJlY3QgeT0iMTAiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI0ZGRDcwMCIvPjwvc3ZnPg==' alt=''> Élie Metchnikoff",
+      "Observando larvas de estrela-do-mar, o zoólogo russo Ilya Métchnikov percebeu que certas células móveis engoliam corpos estranhos, um processo que batizou de fagocitose. A descoberta lançou as bases da imunidade inata e lhe rendeu o Nobel de 1908, dividido com Paul Ehrlich.",
+      "https://en.wikipedia.org/wiki/%C3%89lie_Metchnikoff"],
+    ["1890", "Soro antidiftérico (soroterapia)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiMwMDAiLz48cmVjdCB5PSI2LjY3IiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0REMDAwMCIvPjxyZWN0IHk9IjEzLjMzIiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0ZGQ0UwMCIvPjwvc3ZnPg==' alt=''> Emil von Behring",
+      "Emil von Behring, com o colaborador Kitasato Shibasaburo, descobriu que injetar em pacientes o soro sanguíneo de animais imunizados contra a difteria podia neutralizar a toxina da doença e salvar vidas — a chamada soroterapia. A descoberta lhe rendeu o primeiro Nobel de Medicina da história, em 1901.",
+      "https://en.wikipedia.org/wiki/Emil_von_Behring"],
+    ["1892", "Descoberta dos vírus (mosaico do tabaco)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiNmZmYiLz48cmVjdCB5PSI2LjY3IiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iIzAwMzlBNiIvPjxyZWN0IHk9IjEzLjMzIiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0Q1MkIxRSIvPjwvc3ZnPg==' alt=''> Dmitri Ivanovsky",
+      "Investigando uma doença que atacava plantações de tabaco, o botânico russo Dmitri Ivanovsky identificou um agente infeccioso capaz de atravessar filtros que retinham até as menores bactérias conhecidas — a primeira evidência da existência dos vírus.",
+      "https://en.wikipedia.org/wiki/Dmitri_Ivanovsky"],
+  ]},
+  { era: "Virada e início do século XX", range: "1900–1929", color: "var(--era-viradaxx)", items: [
+    ["1900", "Redescoberta das leis de Mendel", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMjE0NjhCIi8+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjEzLjMzIiBmaWxsPSIjZmZmIi8+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiNBRTFDMjgiLz48L3N2Zz4=' alt=''><img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiMwMDAiLz48cmVjdCB5PSI2LjY3IiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0REMDAwMCIvPjxyZWN0IHk9IjEzLjMzIiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0ZGQ0UwMCIvPjwvc3ZnPg==' alt=''><img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjRUQyOTM5Ii8+PHJlY3QgeT0iNi42NyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiNmZmYiLz48L3N2Zz4=' alt=''> de Vries, Correns e Tschermak",
+      "De forma independente, os cientistas Hugo de Vries, Carl Correns e Erich von Tschermak chegaram a conclusões semelhantes às de Mendel sobre a hereditariedade e, ao revisar a literatura, redescobriram seu trabalho esquecido de 1866. Isso deu início à genética como campo científico formal.",
+      "https://en.wikipedia.org/wiki/Hugo_de_Vries"],
+    ["1901", "Descoberta dos tipos sanguíneos (A, B, AB, O)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjRUQyOTM5Ii8+PHJlY3QgeT0iNi42NyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiNmZmYiLz48L3N2Zz4=' alt=''> Karl Landsteiner",
+      "Karl Landsteiner descobriu que o sangue humano se divide em tipos diferentes, dependendo de moléculas presentes na superfície das células vermelhas. A descoberta tornou possível realizar transfusões de sangue com segurança, salvando incontáveis vidas desde então.",
+      "https://en.wikipedia.org/wiki/Karl_Landsteiner"],
+    ["1901", "Soro antiofídico específico", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDA5NzM5Ii8+PHBhdGggZD0iTTE1LDIgTDI4LDEwIEwxNSwxOCBMMiwxMCBaIiBmaWxsPSIjRkVERDAwIi8+PGNpcmNsZSBjeD0iMTUiIGN5PSIxMCIgcj0iNC4yIiBmaWxsPSIjMDEyMTY5Ii8+PC9zdmc+' alt=''> Vital Brazil",
+      "O médico brasileiro Vital Brazil descobriu que o veneno de cada espécie de cobra exige um soro específico para ser neutralizado, criando o primeiro soro antiofídico eficaz do mundo. Fundou o Instituto Butantan, hoje um dos maiores produtores de soros e vacinas da América Latina.",
+      "https://en.wikipedia.org/wiki/Vital_Brazil"],
+    ["1903–1904", "Erradicação da febre amarela no Rio de Janeiro", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDA5NzM5Ii8+PHBhdGggZD0iTTE1LDIgTDI4LDEwIEwxNSwxOCBMMiwxMCBaIiBmaWxsPSIjRkVERDAwIi8+PGNpcmNsZSBjeD0iMTUiIGN5PSIxMCIgcj0iNC4yIiBmaWxsPSIjMDEyMTY5Ii8+PC9zdmc+' alt=''> Oswaldo Cruz",
+      "À frente da saúde pública do Rio de Janeiro, Oswaldo Cruz liderou uma campanha sanitária que eliminou a febre amarela, a varíola e a peste bubônica da cidade, combatendo o mosquito transmissor porta a porta. Apesar da forte resistência popular (a Revolta da Vacina), seu trabalho lançou as bases da saúde pública moderna no Brasil.",
+      "https://en.wikipedia.org/wiki/Oswaldo_Cruz"],
+    ["1905", "Descoberta dos cromossomos sexuais (X e Y)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''> Nettie Stevens",
+      "Estudando vermes-da-farinha, Nettie Stevens percebeu que machos produzem espermatozoides com dois tipos diferentes de cromossomo — um grande (X) e um pequeno (Y) —, enquanto fêmeas produzem apenas o tipo grande. Foi a primeira demonstração de que o sexo de um indivíduo é determinado por seus cromossomos.",
+      "https://en.wikipedia.org/wiki/Nettie_Stevens"],
+    ["1909", "Descoberta da doença de Chagas", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDA5NzM5Ii8+PHBhdGggZD0iTTE1LDIgTDI4LDEwIEwxNSwxOCBMMiwxMCBaIiBmaWxsPSIjRkVERDAwIi8+PGNpcmNsZSBjeD0iMTUiIGN5PSIxMCIgcj0iNC4yIiBmaWxsPSIjMDEyMTY5Ii8+PC9zdmc+' alt=''> Carlos Chagas",
+      "Trabalhando sozinho em um vagão de trem no interior de Minas Gerais, Carlos Chagas identificou, em sequência, o inseto transmissor, o parasita causador e as características clínicas de uma doença até então desconhecida — a doença de Chagas. É um feito único na história da medicina: um único pesquisador descobriu todos os elementos de uma doença nova.",
+      "https://en.wikipedia.org/wiki/Carlos_Chagas"],
+    ["1909", "Salvarsan e o nascimento da quimioterapia", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiMwMDAiLz48cmVjdCB5PSI2LjY3IiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0REMDAwMCIvPjxyZWN0IHk9IjEzLjMzIiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0ZGQ0UwMCIvPjwvc3ZnPg==' alt=''> Paul Ehrlich",
+      "Paul Ehrlich desenvolveu o Salvarsan, o primeiro composto químico capaz de tratar eficazmente a sífilis, inaugurando o conceito de quimioterapia — o uso de substâncias químicas para atacar seletivamente um agente causador de doença, sua ideia da \"bala mágica\".",
+      "https://en.wikipedia.org/wiki/Paul_Ehrlich"],
+    ["~1910–1915", "Teoria cromossômica da herança (com Drosophila)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''> Thomas Hunt Morgan",
+      "Trabalhando com moscas-das-frutas (Drosophila), Thomas Hunt Morgan demonstrou que os genes estão fisicamente localizados nos cromossomos e podem ser mapeados em posições específicas — a primeira evidência concreta de onde a informação hereditária reside na célula.",
+      "https://en.wikipedia.org/wiki/Thomas_Hunt_Morgan"],
+    ["1916", "Descoberta da bactéria causadora do tifo", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDA5NzM5Ii8+PHBhdGggZD0iTTE1LDIgTDI4LDEwIEwxNSwxOCBMMiwxMCBaIiBmaWxsPSIjRkVERDAwIi8+PGNpcmNsZSBjeD0iMTUiIGN5PSIxMCIgcj0iNC4yIiBmaWxsPSIjMDEyMTY5Ii8+PC9zdmc+' alt=''> Henrique da Rocha Lima",
+      "O médico brasileiro Henrique da Rocha Lima identificou a bactéria causadora do tifo exantemático, batizando-a de Rickettsia em homenagem a dois pesquisadores que morreram estudando a doença. Sua descoberta deu origem a todo um novo grupo de micro-organismos.",
+      "https://en.wikipedia.org/wiki/Henrique_da_Rocha_Lima"],
+    ["Década de 1920", "Hipótese da \"sopa primordial\"", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiNmZmYiLz48cmVjdCB5PSI2LjY3IiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iIzAwMzlBNiIvPjxyZWN0IHk9IjEzLjMzIiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0Q1MkIxRSIvPjwvc3ZnPg==' alt=''><img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAyNDdEIi8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNMTUsMCBWMjAgTTAsMTAgSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIvPjxwYXRoIGQ9Ik0xNSwwIFYyMCBNMCwxMCBIMzAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIzLjIiLz48L3N2Zz4=' alt=''> Alexander Oparin e J.B.S. Haldane",
+      "De forma independente, o bioquímico soviético Alexander Oparin e o cientista britânico J.B.S. Haldane propuseram que a vida surgiu de reações químicas simples na atmosfera primitiva da Terra, formando um caldo de moléculas orgânicas — a chamada \"sopa primordial\". A hipótese guiaria décadas de pesquisa sobre a origem da vida.",
+      "https://en.wikipedia.org/wiki/Primordial_soup"],
+    ["1928", "Princípio transformante — indício de que o DNA carrega herança", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAyNDdEIi8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNMTUsMCBWMjAgTTAsMTAgSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIvPjxwYXRoIGQ9Ik0xNSwwIFYyMCBNMCwxMCBIMzAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIzLjIiLz48L3N2Zz4=' alt=''> Frederick Griffith",
+      "Frederick Griffith descobriu que bactérias inofensivas podiam se tornar letais ao entrar em contato com restos de bactérias patogênicas mortas, como se algo tivesse sido transferido entre elas. Ele chamou esse agente misterioso de \"princípio transformante\", mais tarde identificado como DNA.",
+      "https://en.wikipedia.org/wiki/Griffith%27s_experiment"],
+    ["1928", "Descoberta da penicilina", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAyNDdEIi8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNMTUsMCBWMjAgTTAsMTAgSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIvPjxwYXRoIGQ9Ik0xNSwwIFYyMCBNMCwxMCBIMzAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIzLjIiLz48L3N2Zz4=' alt=''> Alexander Fleming",
+      "Ao notar que um fungo havia contaminado e destruído bactérias em uma placa de cultura esquecida, Alexander Fleming descobriu por acaso a penicilina. Foi o início da era dos antibióticos, que transformou o tratamento de infecções bacterianas.",
+      "https://en.wikipedia.org/wiki/Alexander_Fleming"],
+  ]},
+  { era: "A era molecular", range: "1930–1960s", color: "var(--era-molecular)", items: [
+    ["Décadas 1930–1940", "Síntese Evolutiva Moderna (Neodarwinismo)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDA1N0I3Ii8+PHJlY3QgeT0iMTAiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI0ZGRDcwMCIvPjwvc3ZnPg==' alt=''><img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiMwMDAiLz48cmVjdCB5PSI2LjY3IiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0REMDAwMCIvPjxyZWN0IHk9IjEzLjMzIiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0ZGQ0UwMCIvPjwvc3ZnPg==' alt=''><img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAyNDdEIi8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNMTUsMCBWMjAgTTAsMTAgSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIvPjxwYXRoIGQ9Ik0xNSwwIFYyMCBNMCwxMCBIMzAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIzLjIiLz48L3N2Zz4=' alt=''> Dobzhansky, Mayr, Huxley e outros",
+      "Cientistas como Theodosius Dobzhansky, Ernst Mayr e Julian Huxley uniram a teoria da evolução de Darwin com a genética de Mendel, explicando a evolução como resultado de mutações genéticas e seleção natural atuando sobre populações.",
+      "https://en.wikipedia.org/wiki/Modern_synthesis_(20th_century)"],
+    ["1944", "Confirmação de que o DNA é a molécula da herança", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3Qgd2lkdGg9IjcuNSIgaGVpZ2h0PSIyMCIgZmlsbD0iI0ZGMDAwMCIvPjxyZWN0IHg9IjIyLjUiIHdpZHRoPSI3LjUiIGhlaWdodD0iMjAiIGZpbGw9IiNGRjAwMDAiLz48cGF0aCBkPSJNMTUsNCBMMTcsOSBMMjEsOCBMMTguNSwxMiBMMjEsMTMgTDE3LDEzIEwxNywxNyBMMTMsMTcgTDEzLDEzIEw5LDEzIEwxMS41LDEyIEw5LDggTDEzLDkgWiIgZmlsbD0iI0ZGMDAwMCIvPjwvc3ZnPg==' alt=''><img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''> Avery, MacLeod e McCarty",
+      "Oswald Avery, Colin MacLeod e Maclyn McCarty retomaram o experimento de Griffith e, por meio de testes bioquímicos, provaram que o \"princípio transformante\" era DNA — não proteína, como muitos acreditavam. Foi a primeira prova direta de que o DNA carrega a informação genética.",
+      "https://en.wikipedia.org/wiki/Avery%E2%80%93MacLeod%E2%80%93McCarty_experiment"],
+    ["1943–1944", "Descoberta da estreptomicina", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDA1N0I3Ii8+PHJlY3QgeT0iMTAiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI0ZGRDcwMCIvPjwvc3ZnPg==' alt=''> Selman Waksman",
+      "Selman Waksman e sua equipe isolaram, a partir de uma bactéria do solo, a estreptomicina — o primeiro antibiótico eficaz contra a tuberculose, até então uma sentença de morte lenta. Waksman também cunhou o termo \"antibiótico\" para descrever essa classe de substâncias.",
+      "https://en.wikipedia.org/wiki/Selman_Waksman"],
+    ["1947", "Produção industrial de vacinas em larga escala", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDA1NUE0Ii8+PHJlY3QgeD0iMjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0VGNDEzNSIvPjwvc3ZnPg==' alt=''> Charles Mérieux",
+      "Charles Mérieux transformou a produção de vacinas de um processo artesanal em uma indústria em larga escala, desenvolvendo métodos para cultivar vírus e bactérias em quantidades industriais. Seu instituto se tornou um dos maiores produtores mundiais de vacinas contra poliomielite, raiva, meningite e outras doenças.",
+      "https://en.wikipedia.org/wiki/Charles_M%C3%A9rieux"],
+    ["1950", "Descoberta dos genes saltadores (transposons)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''> Barbara McClintock",
+      "Estudando padrões de cor em grãos de milho, Barbara McClintock descobriu que certos trechos de DNA podem saltar de uma posição para outra no genoma — os chamados \"genes saltadores\" ou transposons. A descoberta foi tão à frente de seu tempo que ela só recebeu o Nobel, sozinha, em 1983.",
+      "https://en.wikipedia.org/wiki/Barbara_McClintock"],
+    ["1953", "Recriação em laboratório da \"sopa primordial\"", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''> Stanley Miller e Harold Urey",
+      "Stanley Miller e Harold Urey recriaram em laboratório as condições da atmosfera primitiva da Terra — água, metano, amônia e descargas elétricas simulando raios — e observaram a formação espontânea de aminoácidos, os blocos que constroem as proteínas. Foi a primeira prova experimental de que a vida poderia ter surgido de matéria não viva.",
+      "https://en.wikipedia.org/wiki/Miller%E2%80%93Urey_experiment"],
+    ["1953", "Estrutura em dupla hélice do DNA", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''><img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAyNDdEIi8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNMTUsMCBWMjAgTTAsMTAgSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIvPjxwYXRoIGQ9Ik0xNSwwIFYyMCBNMCwxMCBIMzAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIzLjIiLz48L3N2Zz4=' alt=''> Watson e Crick, com dados de Rosalind Franklin e Wilkins",
+      "Combinando modelos moleculares com dados de difração de raios X obtidos por Rosalind Franklin e Maurice Wilkins, James Watson e Francis Crick descreveram a estrutura em dupla hélice do DNA, revelando como a informação genética é armazenada e copiada.",
+      "https://en.wikipedia.org/wiki/DNA"],
+    ["1955", "Vacina inativada contra a poliomielite", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''> Jonas Salk",
+      "Jonas Salk desenvolveu a primeira vacina eficaz contra a poliomielite, usando o vírus inativado (morto). Anunciada em 1955 após um dos maiores testes clínicos já realizados, a vacina fez os casos de pólio despencarem nos Estados Unidos — e Salk recusou-se a patenteá-la, tornando-a acessível ao mundo todo.",
+      "https://en.wikipedia.org/wiki/Jonas_Salk"],
+    ["Década de 1960", "Decifração do código genético", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''><img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiNGRjk5MzMiLz48cmVjdCB5PSI2LjY3IiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI2ZmZiIvPjxyZWN0IHk9IjEzLjMzIiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iIzEzODgwOCIvPjxjaXJjbGUgY3g9IjE1IiBjeT0iMTAiIHI9IjIuNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMDgwIiBzdHJva2Utd2lkdGg9IjAuNSIvPjwvc3ZnPg==' alt=''> Nirenberg, Khorana e outros",
+      "Marshall Nirenberg, Har Gobind Khorana e outros pesquisadores decifraram como sequências de três letras do DNA (códons) correspondem a aminoácidos específicos, revelando o \"alfabeto\" universal usado por todos os seres vivos para construir proteínas.",
+      "https://en.wikipedia.org/wiki/Genetic_code"],
+    ["1961", "Vacina oral contra a poliomielite", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMTAiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI0RDMTQzQyIvPjwvc3ZnPg==' alt=''> Albert Sabin",
+      "Albert Sabin desenvolveu uma vacina oral contra a poliomielite, usando o vírus vivo atenuado — mais fácil e barata de administrar que a de Salk, bastando algumas gotas na boca. A vacina de Sabin se tornou a principal ferramenta usada para levar a poliomielite à beira da erradicação global.",
+      "https://en.wikipedia.org/wiki/Albert_Sabin"],
+    ["1962", "Primavera Silenciosa e o nascimento do ambientalismo", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''> Rachel Carson",
+      "Em Primavera Silenciosa, a bióloga marinha Rachel Carson documentou os efeitos devastadores do uso indiscriminado de pesticidas como o DDT sobre pássaros e ecossistemas inteiros. O livro é considerado o marco fundador do movimento ambientalista moderno e levou à criação da Agência de Proteção Ambiental dos Estados Unidos.",
+      "https://en.wikipedia.org/wiki/Silent_Spring"],
+    ["1967", "Teoria endossimbiótica", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''> Lynn Margulis",
+      "Lynn Margulis propôs que organelas essenciais das células complexas, como mitocôndrias e cloroplastos, se originaram de bactérias engolidas por outras células e que passaram a viver em simbiose permanente dentro delas. Rejeitada a princípio, a teoria hoje é amplamente aceita como explicação para a origem das células eucarióticas.",
+      "https://en.wikipedia.org/wiki/Lynn_Margulis"],
+  ]},
+  { era: "Engenharia genética", range: "1970s–1990s", color: "var(--era-engenharia)", items: [
+    ["1973", "Técnica de DNA recombinante", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''> Stanley Cohen e Herbert Boyer",
+      "Stanley Cohen e Herbert Boyer desenvolveram técnicas para cortar e combinar DNA de diferentes organismos, criando moléculas de DNA recombinante. Essa tecnologia deu origem à biotecnologia moderna, permitindo, por exemplo, produzir insulina humana em bactérias.",
+      "https://en.wikipedia.org/wiki/Recombinant_DNA"],
+    ["1977", "Método de sequenciamento de DNA", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAyNDdEIi8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNMTUsMCBWMjAgTTAsMTAgSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIvPjxwYXRoIGQ9Ik0xNSwwIFYyMCBNMCwxMCBIMzAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIzLjIiLz48L3N2Zz4=' alt=''> Frederick Sanger",
+      "Frederick Sanger desenvolveu o \"método da terminação da cadeia\", a primeira técnica prática para ler a sequência exata de letras (bases) do DNA. O método dominou o sequenciamento genético por quase 40 anos e foi essencial para o Projeto Genoma Humano, rendendo a Sanger seu segundo Nobel de Química.",
+      "https://en.wikipedia.org/wiki/Sanger_sequencing"],
+    ["1977", "Terceiro domínio da vida (Archaea)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''> Carl Woese",
+      "Analisando o RNA ribossômico de micro-organismos, Carl Woese descobriu que certos seres unicelulares — as arqueias — são tão diferentes das bactérias quanto dos seres com núcleo celular. A descoberta reescreveu a árvore da vida, dividindo-a em três domínios: Bactérias, Arqueias e Eucariontes.",
+      "https://en.wikipedia.org/wiki/Three-domain_system"],
+    ["1978", "Primeiro bebê de proveta (Fertilização in Vitro)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAyNDdEIi8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNMTUsMCBWMjAgTTAsMTAgSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIvPjxwYXRoIGQ9Ik0xNSwwIFYyMCBNMCwxMCBIMzAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIzLjIiLz48L3N2Zz4=' alt=''> Equipe de Steptoe e Edwards — Louise Brown",
+      "Louise Brown se tornou a primeira pessoa da história a nascer por fertilização in vitro, fruto do trabalho pioneiro dos cientistas Robert Edwards e Patrick Steptoe. Seu nascimento abriu caminho para o tratamento da infertilidade em todo o mundo.",
+      "https://en.wikipedia.org/wiki/Louise_Brown"],
+    ["1980", "Genes que controlam o plano corporal do embrião", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiMwMDAiLz48cmVjdCB5PSI2LjY3IiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0REMDAwMCIvPjxyZWN0IHk9IjEzLjMzIiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI0ZGQ0UwMCIvPjwvc3ZnPg==' alt=''> Christiane Nüsslein-Volhard",
+      "Junto com Eric Wieschaus, Christiane Nüsslein-Volhard mapeou sistematicamente milhares de moscas-das-frutas para identificar os genes que controlam a formação do plano corporal do embrião. O trabalho revelou cerca de 140 genes essenciais para o desenvolvimento e rendeu aos dois o Nobel de 1995.",
+      "https://en.wikipedia.org/wiki/Christiane_N%C3%BCsslein-Volhard"],
+    ["1983", "Invenção da PCR (Reação em Cadeia da Polimerase)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''> Kary Mullis",
+      "Kary Mullis idealizou uma técnica para copiar e amplificar sequências específicas de DNA milhões de vezes em poucas horas, usando ciclos de aquecimento e resfriamento. A PCR se tornou essencial em pesquisa genética, diagnósticos médicos e ciência forense.",
+      "https://en.wikipedia.org/wiki/Polymerase_chain_reaction"],
+    ["1984", "Descoberta dos telômeros e da telomerase", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAwMDhCIi8+PHJlY3Qgd2lkdGg9IjE1IiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAyNDdEIi8+PHBhdGggZD0iTTAsMCBMMTUsMTAgTTE1LDAgTDAsMTAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNNy41LDAgVjEwIE0wLDUgSDE1IiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMi40Ii8+PHBhdGggZD0iTTcuNSwwIFYxMCBNMCw1IEgxNSIgc3Ryb2tlPSIjQ0YxNDJCIiBzdHJva2Utd2lkdGg9IjEuMiIvPjxjaXJjbGUgY3g9IjIzIiBjeT0iNiIgcj0iMSIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjI1IiBjeT0iMTIiIHI9IjEiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIyMSIgY3k9IjE1IiByPSIxIiBmaWxsPSIjZmZmIi8+PGNpcmNsZSBjeD0iMjYiIGN5PSIxNyIgcj0iMSIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjIyIiBjeT0iNCIgcj0iMC44IiBmaWxsPSIjZmZmIi8+PC9zdmc+' alt=''><img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''><img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAyNDdEIi8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNMTUsMCBWMjAgTTAsMTAgSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIvPjxwYXRoIGQ9Ik0xNSwwIFYyMCBNMCwxMCBIMzAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIzLjIiLz48L3N2Zz4=' alt=''> Blackburn, Greider e Szostak",
+      "Elizabeth Blackburn, Carol Greider e Jack Szostak descobriram os telômeros — as \"pontas protetoras\" dos cromossomos — e a telomerase, a enzima que os reconstrói a cada divisão celular. A descoberta ajudou a explicar por que as células envelhecem e como o câncer consegue driblar esse processo, rendendo aos três o Nobel de 2009.",
+      "https://en.wikipedia.org/wiki/Telomerase"],
+    ["1984", "H. pylori como causa da úlcera estomacal", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAwMDhCIi8+PHJlY3Qgd2lkdGg9IjE1IiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAyNDdEIi8+PHBhdGggZD0iTTAsMCBMMTUsMTAgTTE1LDAgTDAsMTAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNNy41LDAgVjEwIE0wLDUgSDE1IiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMi40Ii8+PHBhdGggZD0iTTcuNSwwIFYxMCBNMCw1IEgxNSIgc3Ryb2tlPSIjQ0YxNDJCIiBzdHJva2Utd2lkdGg9IjEuMiIvPjxjaXJjbGUgY3g9IjIzIiBjeT0iNiIgcj0iMSIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjI1IiBjeT0iMTIiIHI9IjEiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIyMSIgY3k9IjE1IiByPSIxIiBmaWxsPSIjZmZmIi8+PGNpcmNsZSBjeD0iMjYiIGN5PSIxNyIgcj0iMSIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjIyIiBjeT0iNCIgcj0iMC44IiBmaWxsPSIjZmZmIi8+PC9zdmc+' alt=''> Barry Marshall e Robin Warren",
+      "Barry Marshall e Robin Warren descobriram que a maioria das úlceras estomacais não é causada por estresse ou comida apimentada, mas por uma infecção bacteriana (H. pylori). Para provar sua teoria, Marshall chegou a beber uma solução com a bactéria e desenvolveu gastrite — um dos exemplos mais famosos de autoexperimentação na ciência.",
+      "https://en.wikipedia.org/wiki/Barry_Marshall"],
+    ["1990", "Início do Projeto Genoma Humano", "🌐 Consórcio internacional",
+      "Um consórcio internacional de cientistas deu início a um dos maiores empreendimentos coletivos da história da ciência: mapear e sequenciar completamente os cerca de 3 bilhões de pares de bases que compõem o DNA humano.",
+      "https://en.wikipedia.org/wiki/Human_Genome_Project"],
+    ["1993", "Descoberta do microRNA", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''> Victor Ambros e Gary Ruvkun",
+      "Estudando o verme C. elegans, Victor Ambros e Gary Ruvkun descobriram o microRNA — uma molécula minúscula de RNA que, ao contrário do que se pensava, não vira proteína, mas serve para desligar outros genes. A descoberta revelou uma camada inteira de regulação genética até então desconhecida, hoje reconhecida como essencial em praticamente todos os organismos complexos. Passou quase despercebida em 1993, mas rendeu aos dois o Nobel de Medicina em 2024.",
+      "https://en.wikipedia.org/wiki/Victor_Ambros"],
+    ["1996", "Ovelha Dolly — primeiro mamífero clonado de célula adulta", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAyNDdEIi8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNMTUsMCBWMjAgTTAsMTAgSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIvPjxwYXRoIGQ9Ik0xNSwwIFYyMCBNMCwxMCBIMzAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIzLjIiLz48L3N2Zz4=' alt=''> Ian Wilmut e Keith Campbell",
+      "No Instituto Roslin, na Escócia, Ian Wilmut e Keith Campbell criaram a ovelha Dolly, o primeiro mamífero clonado a partir de uma célula adulta especializada. A façanha provou que o núcleo de uma célula adulta ainda contém toda a informação necessária para recriar um organismo inteiro.",
+      "https://en.wikipedia.org/wiki/Dolly_(sheep)"],
+  ]},
+  { era: "O século XXI", range: "2003–hoje", color: "var(--era-xxi)", items: [
+    ["2003", "Sequenciamento completo do genoma humano concluído", "🌐 Consórcio internacional",
+      "O rascunho final do sequenciamento completo do genoma humano foi apresentado, revelando que os humanos têm entre 20 mil e 25 mil genes — muito menos do que se previa. O feito abriu caminho para a medicina genômica personalizada.",
+      "https://en.wikipedia.org/wiki/Human_Genome_Project"],
+    ["2006", "Células-tronco de pluripotência induzida (iPS)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PGNpcmNsZSBjeD0iMTUiIGN5PSIxMCIgcj0iNiIgZmlsbD0iI0JDMDAyRCIvPjwvc3ZnPg==' alt=''><img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAyNDdEIi8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNMTUsMCBWMjAgTTAsMTAgSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIvPjxwYXRoIGQ9Ik0xNSwwIFYyMCBNMCwxMCBIMzAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIzLjIiLz48L3N2Zz4=' alt=''> Shinya Yamanaka e John Gurdon",
+      "John Gurdon havia demonstrado, em 1962, que o núcleo de uma célula adulta podia ser reprogramado para gerar um organismo inteiro. Décadas depois, Shinya Yamanaka descobriu como reverter células adultas comuns ao estado de célula-tronco usando apenas quatro genes, criando uma alternativa às controversas células-tronco embrionárias.",
+      "https://en.wikipedia.org/wiki/Induced_pluripotent_stem_cell"],
+    ["2010", "Primeiro genoma bacteriano totalmente sintético", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''> Craig Venter e equipe",
+      "A equipe liderada por Craig Venter criou a primeira célula bacteriana controlada inteiramente por um genoma sintetizado quimicamente em laboratório — um passo decisivo em direção à biologia sintética e à possibilidade de projetar organismos do zero.",
+      "https://en.wikipedia.org/wiki/Synthetic_mycoides"],
+    ["2012", "Sistema de edição genética CRISPR-Cas9", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''><img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDA1NUE0Ii8+PHJlY3QgeD0iMjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0VGNDEzNSIvPjwvc3ZnPg==' alt=''> Jennifer Doudna e Emmanuelle Charpentier",
+      "Jennifer Doudna e Emmanuelle Charpentier demonstraram que o sistema CRISPR-Cas9, originalmente um mecanismo de defesa de bactérias contra vírus, podia ser reprogramado como uma ferramenta de edição genética precisa e acessível — revolucionando a engenharia genética.",
+      "https://en.wikipedia.org/wiki/CRISPR_gene_editing"],
+    ["2020", "Vacinas de mRNA aplicadas em escala global (COVID-19)", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjYuNjciIGZpbGw9IiNDRTI5MzkiLz48cmVjdCB5PSI2LjY3IiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iI2ZmZiIvPjxyZWN0IHk9IjEzLjMzIiB3aWR0aD0iMzAiIGhlaWdodD0iNi42NyIgZmlsbD0iIzQ3NzA1MCIvPjwvc3ZnPg==' alt=''><img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''> Katalin Karikó e Drew Weissman",
+      "Trabalhando por anos à margem do financiamento científico tradicional, Katalin Karikó e Drew Weissman descobriram em 2005 como modificar o RNA mensageiro para que ele escapasse da resposta inflamatória do corpo — a base técnica que tornou possíveis as vacinas de mRNA aplicadas globalmente contra a COVID-19 a partir de 2020. Receberam o Nobel de Medicina em 2023.",
+      "https://en.wikipedia.org/wiki/Katalin_Karik%C3%B3"],
+    ["2020–2021", "AlphaFold — previsão de estruturas de proteínas por IA", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjMDAyNDdEIi8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTAsMCBMMzAsMjAgTTMwLDAgTDAsMjAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNMTUsMCBWMjAgTTAsMTAgSDMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIvPjxwYXRoIGQ9Ik0xNSwwIFYyMCBNMCwxMCBIMzAiIHN0cm9rZT0iI0NGMTQyQiIgc3Ryb2tlLXdpZHRoPSIzLjIiLz48L3N2Zz4=' alt=''> DeepMind",
+      "O sistema de inteligência artificial AlphaFold, desenvolvido pela DeepMind, resolveu um desafio de décadas ao prever com precisão a estrutura tridimensional de proteínas a partir apenas de sua sequência de aminoácidos, acelerando a pesquisa biomédica.",
+      "https://en.wikipedia.org/wiki/AlphaFold"],
+    ["2024", "Design computacional de proteínas totalmente novas", "<img class='flag-icon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeT0iMC4wMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIzLjA4IiB3aWR0aD0iMzAiIGhlaWdodD0iMS41NCIgZmlsbD0iI0IyMjIzNCIvPjxyZWN0IHk9IjYuMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIxLjU0IiBmaWxsPSIjQjIyMjM0Ii8+PHJlY3QgeT0iOS4yMyIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxMi4zMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxNS4zOCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB5PSIxOC40NiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEuNTQiIGZpbGw9IiNCMjIyMzQiLz48cmVjdCB3aWR0aD0iMTMiIGhlaWdodD0iMTAuNzciIGZpbGw9IiMzQzNCNkUiLz48L3N2Zz4=' alt=''> David Baker",
+      "Enquanto o AlphaFold aprendeu a prever a estrutura de proteínas já existentes na natureza, David Baker deu o passo seguinte: desenvolveu métodos computacionais para desenhar proteínas completamente novas, com funções sob encomenda, que nunca existiram antes. Suas criações já são usadas como vacinas, sensores e nanomateriais — e lhe renderam metade do Nobel de Química de 2024, com a outra metade para Hassabis e Jumper.",
+      "https://en.wikipedia.org/wiki/David_Baker_(biochemist)"],
+  ]},
+];
+
+const root = document.getElementById('timeline');
+let delayIndex = 0;
+let uid = 0;
+
+data.forEach(group => {
+  const era = document.createElement('div');
+  era.className = 'era';
+  era.innerHTML = `
+    <div class="era-header">
+      <span class="era-dot" style="background:${group.color}"></span>
+      <h2>${group.era}</h2>
+      <span>${group.range}</span>
+    </div>
+    <div class="spine"></div>
+  `;
+  const spine = era.querySelector('.spine');
+  group.items.forEach(([year, title, who, summary, link]) => {
+    uid++;
+    const entry = document.createElement('div');
+    entry.className = 'entry';
+    entry.style.setProperty('--dot-color', group.color);
+    entry.style.animationDelay = (delayIndex % 12) * 0.04 + 's';
+    delayIndex++;
+    const panelId = 'panel-' + uid;
+    entry.innerHTML = `
+      <div class="entry-card">
+        <button class="entry-trigger" aria-expanded="false" aria-controls="${panelId}">
+          <div class="entry-main">
+            <div class="entry-year">${year}</div>
+            <p class="entry-title">${title}</p>
+            <p class="entry-who">${who}</p>
+          </div>
+          <svg class="chevron" viewBox="0 0 20 20" fill="none">
+            <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="entry-detail" id="${panelId}">
+          <div class="entry-detail-inner">
+            <p class="entry-summary">${summary}</p>
+            <a class="entry-link" href="${link}" target="_blank" rel="noopener noreferrer">
+              Saiba mais na Wikipédia
+              <svg viewBox="0 0 20 20" fill="none"><path d="M7 5h8v8M15 5L5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    `;
+    const trigger = entry.querySelector('.entry-trigger');
+    trigger.addEventListener('click', () => {
+      const isOpen = entry.classList.toggle('open');
+      trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    spine.appendChild(entry);
+  });
+  root.appendChild(era);
+});
+</script>
+</body>
+</html>

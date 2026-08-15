@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engenharia genética — Fernando Curbani</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <div class="crumb"><a href="index.html">Início</a>
+    <span class="sep">/</span>
+    <a href="conhecimento.html">Fonte de Conhecimento</a>
+    <span class="sep">/</span>
+    <a href="artigos.html">Artigos</a>
+    <span class="sep">/</span>
+    <span class="current">Engenharia genética</span></div>
+  <div class="hero">
+    <p class="hero-eyebrow">Artigos · Fonte de Conhecimento</p>
+    <h1>Engenharia genética em leveduras não convencionais</h1>
+    <p class="subtitle">As ferramentas — e as armadilhas — para editar o genoma de uma levedura que não é S. cerevisiae.</p>
+  </div>
+
+  <section>
+    <h2>Pré-requisitos</h2>
+    <p class="body-text">
+      A engenharia de <em>S. passalidarum</em> não é trivial, e o ferramental é menos maduro que o de
+      <em>S. cerevisiae</em>. Antes de qualquer construção, é necessário estabelecer: (i) protocolo de
+      transformação eficiente; (ii) marcadores de seleção funcionais; (iii) promotores caracterizados;
+      (iv) sistema CRISPR/Cas9 adaptado, com RNA-guia expresso por promotor de RNA Pol III validado no
+      organismo.
+    </p>
+    <p class="body-text">
+      <strong>Atenção:</strong> leveduras do clado <em>Candida</em>/<em>Spathaspora</em> podem usar o
+      códon CTG de forma alternativa, o que pode inviabilizar marcadores heterólogos padrão — este é o
+      principal risco técnico do projeto.
+    </p>
+  </section>
+
+  <section>
+    <h2>Alvos genéticos do projeto</h2>
+    <p class="body-text"><strong>GSH1</strong> — superexpressão da etapa limitante e sujeita a inibição por retroalimentação. Prioridade máxima.</p>
+    <p class="body-text"><strong>Fusão Gsh1-Gsh2</strong> — resolve o gargalo de γ-glutamilcisteína por canalização de substrato.</p>
+    <p class="body-text"><strong>CYS3</strong> — aumenta a disponibilidade de cisteína endógena, reduzindo a dependência de suplementação exógena.</p>
+    <p class="body-text"><strong>ECM38</strong> (knock-out) — bloqueia a degradação de GSH pela γ-glutamiltranspeptidase.</p>
+    <p class="body-text" style="margin-bottom:0;"><strong>GLR1</strong> — a direção (superexpressão ou deleção) depende do produto-alvo: GSH reduzido favorece a superexpressão; GSSG (mais estável em pó) favorece a deleção combinada à superexpressão de GPX3.</p>
+  </section>
+
+  <footer>Fernando Curbani · Programa de Pós-Graduação em Engenharia de Alimentos · UFSC</footer>
+</div>
+
+<script src="nav.js"></script>
+<script>renderNav('artigos');</script>
+</body>
+</html>

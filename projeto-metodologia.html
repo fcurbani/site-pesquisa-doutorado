@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metodologia — Fernando Curbani</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <div class="crumb"><a href="index.html">Início</a>
+    <span class="sep">/</span>
+    <a href="projeto-doutorado.html">Projeto Doutorado</a>
+    <span class="sep">/</span>
+    <span class="current">Metodologia</span></div>
+  <div class="hero">
+    <p class="hero-eyebrow">Projeto Doutorado</p>
+    <h1>Metodologia — cinco fases</h1>
+    <p class="subtitle">A execução organiza-se em cinco fases sequenciais, com pontos de decisão explícitos entre elas. A pesquisa está atualmente na Fase 0.</p>
+  </div>
+
+  <section>
+    <div class="phase-list" id="phase-list"></div>
+  </section>
+  <style>
+    .phase-list { display: flex; flex-direction: column; gap: 0; }
+    .phase { display: flex; gap: 16px; position: relative; padding-bottom: 26px; }
+    .phase:last-child { padding-bottom: 0; }
+    .phase-rail { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+    .phase-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: #fff; flex-shrink: 0; }
+    .phase-line { width: 1.5px; flex: 1; background: var(--line); margin-top: 4px; }
+    .phase-body { flex: 1; padding-top: 2px; }
+    .phase-title { font-size: 14.5px; font-weight: 600; margin: 0 0 4px; }
+    .phase-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.6; margin: 0 0 6px; }
+    .phase-deliverable { font-size: 11.5px; color: var(--ink-soft); font-style: italic; }
+  </style>
+  <script>
+    const phases = [
+      ["0", "var(--ink-soft)", "Revisão sistemática", "Protocolo PRISMA 2020: pergunta PICO, busca em 8 bases, triagem em duplicata, extração de dados.", "Artigo de revisão + protocolo registrado"],
+      ["1", "var(--accent)", "Screening metabólico basal", "Quantificação de GSH/GSSG em S. passalidarum vs. S. cerevisiae PE-2, em glicose e xilose, por ensaio de reciclagem (DTNB/Tietze).", "Primeira quantificação de GSH na espécie — ponto de decisão go/no-go"],
+      ["2", "var(--amber)", "Indução por estresse e enxofre", "Curva de resposta a sulfato, suplementação de cisteína/glutamato/glicina, exposição a furfural, HMF, ácido acético e H₂O₂.", "Mapa de resposta do pool de GSH"],
+      ["3", "var(--plum)", "Engenharia metabólica e ALE", "Superexpressão de GSH1/GSH2, fusão Gsh1-Gsh2, knock-out de ECM38, e evolução adaptativa laboratorial sob pressão oxidativa.", "Cepa superprodutora selecionada"],
+      ["4", "var(--green)", "Bioprocesso em biorreator", "Batelada alimentada com controle de OD (DO-stat), alimentação de precursores, migração de xilose pura para hidrolisado real.", "Estratégia de fed-batch validada"],
+      ["5", "var(--rust)", "Downstream e estabilização", "Comparação de métodos de lise (térmica, enzimática, alta pressão) e otimização de spray drying com estudo de shelf-life.", "Ingrediente em pó caracterizado"],
+    ];
+    const phaseList = document.getElementById('phase-list');
+    phases.forEach(([num, color, title, desc, deliv], i) => {
+      const el = document.createElement('div');
+      el.className = 'phase';
+      el.innerHTML = `
+        <div class="phase-rail">
+          <div class="phase-dot" style="background:${color}">${num}</div>
+          ${i < phases.length - 1 ? '<div class="phase-line"></div>' : ''}
+        </div>
+        <div class="phase-body">
+          <p class="phase-title">${title}</p>
+          <p class="phase-desc">${desc}</p>
+          <p class="phase-deliverable">→ ${deliv}</p>
+        </div>
+      `;
+      phaseList.appendChild(el);
+    });
+  </script>
+
+  <footer>Fernando Curbani · Programa de Pós-Graduação em Engenharia de Alimentos · UFSC</footer>
+</div>
+
+<script src="nav.js"></script>
+<script>renderNav('projeto-metodologia');</script>
+</body>
+</html>

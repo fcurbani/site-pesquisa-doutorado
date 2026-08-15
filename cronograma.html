@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cronograma — Fernando Curbani</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+<style>
+  :root {
+    --bg: #EEF1F4; --ink: #1A2333; --ink-soft: #4B5768;
+    --card: #FFFFFF; --line: #D7DEE5; --accent: #2C5F8A;
+    --amber: #B8863B; --green: #3B6E4F; --plum: #6B4A82;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px 100px; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  nav {
+    display: flex; gap: 22px; align-items: center; padding: 22px 24px;
+    max-width: 980px; margin: 0 auto; font-size: 13.5px;
+  }
+  nav a { color: var(--ink-soft); text-decoration: none; }
+  nav a:hover { color: var(--ink); }
+  nav .brand { font-weight: 600; color: var(--ink); margin-right: auto; }
+
+  .hero { padding: 26px 0 6px; }
+  .hero-eyebrow {
+    font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent); margin: 0 0 14px; font-weight: 600;
+  }
+  h1 {
+    font-family: 'Source Serif 4', serif; font-weight: 700;
+    font-size: 32px; line-height: 1.25; margin: 0 0 10px;
+  }
+  .subtitle { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin: 0 0 8px; max-width: 560px; }
+  .updated {
+    font-size: 12px; color: var(--ink-soft); margin-bottom: 30px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .updated .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+
+  .board {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;
+  }
+  .col-head {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+    font-size: 13px; font-weight: 600;
+  }
+  .col-head .count {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500;
+    color: var(--ink-soft); background: var(--card); border: 1px solid var(--line);
+    padding: 1px 7px; border-radius: 10px;
+  }
+  .col-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .col-planned .col-dot { background: var(--ink-soft); }
+  .col-progress .col-dot { background: var(--amber); }
+  .col-done .col-dot { background: var(--green); }
+
+  .col-body { display: flex; flex-direction: column; gap: 10px; min-height: 40px; }
+
+  .task {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 13px 15px;
+  }
+  .col-progress .task { border-left: 3px solid var(--amber); }
+  .col-done .task { border-left: 3px solid var(--green); opacity: 0.75; }
+  .task-title {
+    font-size: 13.5px; font-weight: 500; line-height: 1.45; margin: 0 0 6px;
+  }
+  .col-done .task-title { text-decoration: line-through; color: var(--ink-soft); }
+  .task-meta {
+    font-size: 11px; color: var(--ink-soft); display: flex; align-items: center; gap: 5px;
+  }
+  .task-phase {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600;
+    background: color-mix(in srgb, var(--accent) 12%, white); color: var(--accent);
+    padding: 1px 6px; border-radius: 4px;
+  }
+
+  .empty-hint {
+    font-size: 12.5px; color: var(--ink-soft); font-style: italic;
+    padding: 13px 15px; border: 1px dashed var(--line); border-radius: 10px;
+  }
+
+  footer {
+    text-align: center; margin-top: 60px; padding-top: 24px;
+    border-top: 0.5px solid var(--line); font-size: 12.5px; color: var(--ink-soft);
+  }
+
+  @media (max-width: 720px) {
+    .board { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <div class="hero">
+    <p class="hero-eyebrow">Cronograma semanal</p>
+    <h1>O que está andando agora</h1>
+    <p class="subtitle">Um quadro simples, atualizado semana a semana: o que está planejado, o que está em andamento e o que já foi concluído.</p>
+    <div class="updated"><span class="dot"></span>Atualizado em agosto de 2026</div>
+  </div>
+
+  <div class="board">
+    <div class="col col-planned">
+      <div class="col-head"><span class="col-dot"></span>Planejado <span class="count">2</span></div>
+      <div class="col-body">
+        <div class="task">
+          <p class="task-title">Iniciar a revisão sistemática (protocolo PRISMA 2020)</p>
+          <div class="task-meta"><span class="task-phase">FASE 0</span>meta: ainda em 2026</div>
+        </div>
+        <div class="task">
+          <p class="task-title">Screening metabólico basal — comparar GSH em S. passalidarum vs. S. cerevisiae</p>
+          <div class="task-meta"><span class="task-phase">FASE 1</span>meta: ainda em 2026</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col col-progress">
+      <div class="col-head"><span class="col-dot"></span>Em andamento <span class="count">2</span></div>
+      <div class="col-body">
+        <div class="task">
+          <p class="task-title">Leitura de artigos — levantamento da literatura</p>
+          <div class="task-meta"><span class="task-phase">FASE 0</span>contínuo</div>
+        </div>
+        <div class="task">
+          <p class="task-title">Disciplinas do doutorado</p>
+          <div class="task-meta"><span class="task-phase">PPGEAL</span>contínuo</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col col-done">
+      <div class="col-head"><span class="col-dot"></span>Concluído <span class="count">0</span></div>
+      <div class="col-body">
+        <div class="empty-hint">Nada concluído ainda por aqui — assim que a primeira etapa fechar, ela aparece nesta coluna.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Fernando Curbani · Programa de Pós-Graduação em Engenharia de Alimentos · UFSC</footer>
+</div>
+
+<script src="nav.js"></script>
+<script>renderNav('cronograma');</script>
+</body>
+</html>

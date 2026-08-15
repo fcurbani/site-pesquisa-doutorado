@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protocolos — Fernando Curbani</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <div class="crumb"><a href="index.html">Início</a>
+    <span class="sep">/</span>
+    <a href="laboratorio.html">Laboratório</a>
+    <span class="sep">/</span>
+    <span class="current">Protocolos</span></div>
+  <div class="hero">
+    <p class="hero-eyebrow">Laboratório</p>
+    <h1>Protocolos</h1>
+    <p class="subtitle">O procedimento mais crítico do projeto até aqui: extrair glutationa sem deixar que ela oxide no processo.</p>
+  </div>
+
+  <section>
+    <h2>Extração de GSH — Fase 1 (screening)</h2>
+    <p class="body-text">
+      A glutationa é intracelular e oxida-se rapidamente após a lise. O procedimento precisa
+      simultaneamente romper a célula, precipitar proteínas e bloquear a oxidação.
+    </p>
+    <div class="card">
+      <p class="body-text"><strong>1.</strong> Colher volume conhecido de cultura; centrifugar (5.000 × g, 5 min, 4 °C).</p>
+      <p class="body-text"><strong>2.</strong> Lavar o pellet duas vezes com água ou tampão fosfato gelados, para remover meio residual.</p>
+      <p class="body-text"><strong>3.</strong> Ressuspender em ácido sulfossalicílico 5% (m/v) gelado — alternativa: ácido perclórico 5%. O ácido precipita proteínas, libera a GSH e mantém pH baixo, retardando a oxidação.</p>
+      <p class="body-text"><strong>4.</strong> Romper por vortex com beads de vidro (0,4–0,5 mm), 6+ ciclos de 30 s com intervalos de 30 s em gelo. Validar a eficiência de lise por contagem antes/depois.</p>
+      <p class="body-text" style="margin-bottom:0;"><strong>5.</strong> Centrifugar (12.000 × g, 10 min, 4 °C); coletar o sobrenadante, manter em gelo e protegido da luz. Analisar no mesmo dia ou congelar a −80 °C.</p>
+    </div>
+    <p class="body-text" style="margin-top:14px;">
+      <strong>Controle obrigatório:</strong> experimento de spike-and-recovery (adição de GSH padrão a
+      uma alíquota antes da extração) para cada espécie — sem esse controle, uma diferença observada
+      entre <em>S. passalidarum</em> e <em>S. cerevisiae</em> pode ser artefato de lise, não biologia.
+    </p>
+  </section>
+
+  <footer>Fernando Curbani · Programa de Pós-Graduação em Engenharia de Alimentos · UFSC</footer>
+</div>
+
+<script src="nav.js"></script>
+<script>renderNav('protocolos');</script>
+</body>
+</html>

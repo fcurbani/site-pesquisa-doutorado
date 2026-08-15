@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Produção de GSH por Spathaspora passalidarum — Projeto de Doutorado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+<style>
+  :root {
+    --bg: #EEF1F4; --ink: #1A2333; --ink-soft: #4B5768;
+    --card: #FFFFFF; --line: #D7DEE5; --accent: #2C5F8A;
+    --amber: #B8863B; --plum: #6B4A82; --green: #3B6E4F; --rust: #9C4A2E;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 100px; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  nav {
+    display: flex; gap: 22px; align-items: center; padding: 22px 24px;
+    max-width: 780px; margin: 0 auto; font-size: 13.5px;
+  }
+  nav a { color: var(--ink-soft); text-decoration: none; }
+  nav a:hover { color: var(--ink); }
+  nav .brand { font-weight: 600; color: var(--ink); margin-right: auto; }
+
+  .hero { padding: 26px 0 6px; }
+  .hero-eyebrow {
+    font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent); margin: 0 0 14px; font-weight: 600;
+  }
+  h1 {
+    font-family: 'Source Serif 4', serif; font-weight: 700;
+    font-size: 32px; line-height: 1.25; margin: 0 0 14px;
+  }
+  .subtitle { font-size: 15.5px; color: var(--ink-soft); line-height: 1.6; margin: 0 0 22px; }
+
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 34px;
+  }
+  .meta-chip {
+    font-size: 12px; padding: 5px 11px; border-radius: 20px;
+    background: var(--card); border: 1px solid var(--line); color: var(--ink-soft);
+  }
+  .meta-chip b { color: var(--ink); font-weight: 600; }
+  .meta-chip.status { background: color-mix(in srgb, var(--green) 12%, white); color: var(--green); border-color: transparent; font-weight: 600; }
+
+  section { margin-bottom: 40px; }
+  h2 {
+    font-family: 'Source Serif 4', serif; font-size: 20px; font-weight: 600;
+    margin: 0 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--line);
+  }
+  p.body-text { font-size: 14.5px; line-height: 1.75; color: var(--ink-soft); margin: 0 0 14px; }
+  p.body-text strong { color: var(--ink); font-weight: 600; }
+
+  .callout {
+    background: color-mix(in srgb, var(--amber) 8%, white);
+    border: 1px solid color-mix(in srgb, var(--amber) 30%, white);
+    border-radius: 10px; padding: 16px 20px; font-size: 13.5px; color: var(--ink);
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .callout svg { width: 18px; height: 18px; color: var(--amber); flex-shrink: 0; margin-top: 1px; }
+  .callout a { color: var(--amber); font-weight: 600; }
+
+  /* Hypotheses */
+  .hyp-list { display: flex; flex-direction: column; gap: 10px; }
+  .hyp {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 14px 18px; cursor: pointer;
+  }
+  .hyp-head { display: flex; align-items: center; gap: 10px; }
+  .hyp-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
+    background: color-mix(in srgb, var(--accent) 12%, white); color: var(--accent);
+    padding: 2px 7px; border-radius: 5px; flex-shrink: 0;
+  }
+  .hyp-title { font-size: 13.5px; flex: 1; line-height: 1.5; }
+  .hyp-revised {
+    font-size: 10.5px; font-weight: 600; color: var(--rust);
+    background: color-mix(in srgb, var(--rust) 12%, white);
+    padding: 2px 8px; border-radius: 20px; flex-shrink: 0;
+  }
+  .hyp-chevron { width: 14px; height: 14px; color: var(--ink-soft); flex-shrink: 0; transition: transform 0.2s; }
+  .hyp.open .hyp-chevron { transform: rotate(180deg); }
+  .hyp-detail { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+  .hyp.open .hyp-detail { max-height: 300px; }
+  .hyp-detail-inner { padding-top: 12px; margin-top: 10px; border-top: 0.5px solid var(--line); font-size: 13px; color: var(--ink-soft); line-height: 1.65; }
+  .hyp-detail-inner .refut { margin-top: 8px; font-size: 12px; color: var(--ink-soft); }
+  .hyp-detail-inner .refut b { color: var(--ink); }
+
+  /* Methodology phases */
+  .phase-list { display: flex; flex-direction: column; gap: 0; }
+  .phase {
+    display: flex; gap: 16px; position: relative; padding-bottom: 26px;
+  }
+  .phase:last-child { padding-bottom: 0; }
+  .phase-rail { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+  .phase-dot {
+    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
+    color: #fff; flex-shrink: 0;
+  }
+  .phase-line { width: 1.5px; flex: 1; background: var(--line); margin-top: 4px; }
+  .phase-body { flex: 1; padding-top: 2px; }
+  .phase-title { font-size: 14.5px; font-weight: 600; margin: 0 0 4px; }
+  .phase-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.6; margin: 0 0 6px; }
+  .phase-deliverable {
+    font-size: 11.5px; color: var(--ink-soft); font-style: italic;
+  }
+
+  /* Timeline bar */
+  .sem-bar { display: flex; gap: 3px; margin-top: 4px; }
+  .sem-cell {
+    flex: 1; height: 26px; border-radius: 4px; background: var(--line);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-soft);
+  }
+  .sem-cell.active { background: var(--accent); color: #fff; }
+
+  footer {
+    text-align: center; margin-top: 50px; padding-top: 24px;
+    border-top: 0.5px solid var(--line); font-size: 12.5px; color: var(--ink-soft);
+  }
+</style>
+</head>
+<body>
+
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <div class="hero">
+    <p class="hero-eyebrow">Projeto de doutorado</p>
+    <h1>Produção de Glutationa (GSH) por Spathaspora passalidarum a partir de Xilose</h1>
+    <p class="subtitle">Valorização de resíduo lignocelulósico de baixo custo para a produção de um ingrediente de alto valor agregado.</p>
+    <div class="meta-row">
+      <span class="meta-chip status">● Fase 0 — Revisão sistemática</span>
+      <span class="meta-chip">Orientadora: <b>Profa. Dra. Jaciane Lutz Ienczak</b></span>
+      <span class="meta-chip">PPGEAL · <b>UFSC</b></span>
+      <span class="meta-chip">Início: <b>2026</b></span>
+      <span class="meta-chip">Duração prevista: <b>48 meses</b></span>
+    </div>
+  </div>
+
+  <section>
+    <h2>Resumo</h2>
+    <p class="body-text">
+      A glutationa (GSH) é um tripeptídeo antioxidante de alto valor, usado nas indústrias
+      farmacêutica, alimentícia e cosmética. Hoje é produzida quase exclusivamente por
+      <em>Saccharomyces cerevisiae</em> e <em>Candida utilis</em> fermentando glicose ou melaço —
+      substratos de primeira geração, que competem com a cadeia alimentar.
+    </p>
+    <p class="body-text">
+      Este projeto propõe uma rota alternativa: usar a <strong>Spathaspora passalidarum</strong>,
+      levedura nativa fermentadora de xilose, para converter hidrolisado lignocelulósico — resíduo
+      agroindustrial de baixíssimo custo — em glutationa. A hipótese central se apoia em evidência
+      transcriptômica prévia do próprio grupo, que mostrou os metabolismos de enxofre e de glutationa
+      reprogramados nesta levedura durante fermentação de segunda geração — indício de que a
+      maquinaria biossintética de GSH existe e é regulada dinamicamente no organismo.
+    </p>
+    <p class="body-text">
+      É uma lacuna real: nenhum estudo publicado quantifica o conteúdo de glutationa em
+      <em>S. passalidarum</em>, nem propõe a levedura como plataforma de produção de GSH.
+    </p>
+  </section>
+
+  <section>
+    <h2>Hipóteses de trabalho</h2>
+    <div class="hyp-list" id="hyp-list"></div>
+  </section>
+
+  <section>
+    <div class="callout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4M12 17h.01M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.4 0Z"/></svg>
+      <span>A hipótese <b>H2</b> e a seção do "vetor de cofator" foram revisadas — a xilose não gera NADPH diretamente pela via das pentoses fosfato, como constava na versão original. Ver a correção completa no <a href="diario.html#entrada-1">diário de bordo</a>.</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Metodologia — cinco fases</h2>
+    <div class="phase-list" id="phase-list"></div>
+  </section>
+
+  <section>
+    <h2>Cronograma</h2>
+    <p class="body-text" style="margin-bottom:18px;">48 meses, organizados em 8 semestres (S1–S8). A pesquisa está atualmente na Fase 0.</p>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12.5px; color:var(--ink-soft); margin-bottom:6px;">Revisão sistemática (PRISMA)</div>
+      <div class="sem-bar">
+        <div class="sem-cell active">S1</div><div class="sem-cell active">S2</div>
+        <div class="sem-cell">S3</div><div class="sem-cell">S4</div>
+        <div class="sem-cell">S5</div><div class="sem-cell">S6</div>
+        <div class="sem-cell">S7</div><div class="sem-cell">S8</div>
+      </div>
+    </div>
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12.5px; color:var(--ink-soft); margin-bottom:6px;">Fase 1 — Screening metabólico basal</div>
+      <div class="sem-bar">
+        <div class="sem-cell">S1</div><div class="sem-cell active">S2</div>
+        <div class="sem-cell active">S3</div><div class="sem-cell">S4</div>
+        <div class="sem-cell">S5</div><div class="sem-cell">S6</div>
+        <div class="sem-cell">S7</div><div class="sem-cell">S8</div>
+      </div>
+    </div>
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12.5px; color:var(--ink-soft); margin-bottom:6px;">Fase 3 — Ferramentas genéticas, construção de cepas e ALE</div>
+      <div class="sem-bar">
+        <div class="sem-cell">S1</div><div class="sem-cell">S2</div>
+        <div class="sem-cell">S3</div><div class="sem-cell active">S4</div>
+        <div class="sem-cell active">S5</div><div class="sem-cell active">S6</div>
+        <div class="sem-cell">S7</div><div class="sem-cell">S8</div>
+      </div>
+    </div>
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12.5px; color:var(--ink-soft); margin-bottom:6px;">Fase 4 e 5 — Biorreator, lise e spray drying</div>
+      <div class="sem-bar">
+        <div class="sem-cell">S1</div><div class="sem-cell">S2</div>
+        <div class="sem-cell">S3</div><div class="sem-cell">S4</div>
+        <div class="sem-cell">S5</div><div class="sem-cell active">S6</div>
+        <div class="sem-cell active">S7</div><div class="sem-cell active">S8</div>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:12.5px; color:var(--ink-soft); margin-bottom:6px;">Redação e defesa</div>
+      <div class="sem-bar">
+        <div class="sem-cell">S1</div><div class="sem-cell">S2</div>
+        <div class="sem-cell">S3</div><div class="sem-cell">S4</div>
+        <div class="sem-cell">S5</div><div class="sem-cell">S6</div>
+        <div class="sem-cell active">S7</div><div class="sem-cell active">S8</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Resultados esperados</h2>
+    <p class="body-text">
+      <strong>Científico:</strong> primeira caracterização quantitativa do pool de glutationa em
+      <em>S. passalidarum</em>, incluindo a especiação GSH/GSSG e sua dependência da fonte de carbono.
+    </p>
+    <p class="body-text">
+      <strong>Mecanístico:</strong> teste direto da hipótese de acoplamento entre catabolismo de
+      pentoses, balanço de NADPH e estado redox da glutationa — relevante também para tolerância a
+      inibidores em etanol 2G.
+    </p>
+    <p class="body-text">
+      <strong>Tecnológico:</strong> prova de conceito de um ingrediente de glutationa a partir de
+      resíduo lignocelulósico, com protocolo de lise estabelecido para uma levedura não convencional e
+      formulação em pó caracterizada — com potencial de proteção por patente.
+    </p>
+  </section>
+
+  <footer>Fernando Curbani · Programa de Pós-Graduação em Engenharia de Alimentos · UFSC</footer>
+</div>
+
+<script>
+const hyps = [
+  ["H1", "S. passalidarum acumula GSH intracelular em nível igual ou superior ao de uma cepa industrial de S. cerevisiae sob condição basal (YPD).",
+    "Conteúdo específico (mg·g⁻¹ DCW) significativamente inferior ao controle (α = 0,05).", false],
+  ["H2", "Em S. passalidarum, o estado redox do pool de glutationa (razão GSH/GSSG) durante o crescimento em xilose é determinado pelo balanço de NADPH entre a demanda (assimilação de enxofre + Glr1), o dreno pela xilose redutase NADPH-dependente (XYL1.1) e a oferta pela PPP oxidativa.",
+    "Razão GSH/GSSG em xilose ≤ glicose e/ou ausência de deslocamento da expressão XYL1.1 → XYL1.2.", true],
+  ["H3", "A exposição a furfural/HMF em concentração subletal induz aumento do pool de glutationa total.",
+    "Ausência de aumento significativo dose-dependente.", false],
+  ["H4", "A suplementação de enxofre e de cisteína eleva o conteúdo de GSH de forma dose-dependente até saturação.",
+    "Ausência de resposta à suplementação.", false],
+  ["H5", "A superexpressão de GSH1 em S. passalidarum eleva o GSH intracelular, sendo esta a etapa limitante também neste organismo.",
+    "Ausência de aumento significativo frente à cepa parental.", false],
+];
+
+const hypList = document.getElementById('hyp-list');
+hyps.forEach(([tag, text, refut, revised]) => {
+  const el = document.createElement('div');
+  el.className = 'hyp';
+  el.innerHTML = `
+    <div class="hyp-head">
+      <span class="hyp-tag">${tag}</span>
+      <span class="hyp-title">${text}</span>
+      ${revised ? '<span class="hyp-revised">revisada</span>' : ''}
+      <svg class="hyp-chevron" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="hyp-detail"><div class="hyp-detail-inner">
+      <div class="refut"><b>Critério de refutação:</b> ${refut}</div>
+    </div></div>
+  `;
+  el.addEventListener('click', () => el.classList.toggle('open'));
+  hypList.appendChild(el);
+});
+
+const phases = [
+  ["0", "var(--ink-soft)", "Revisão sistemática", "Protocolo PRISMA 2020: pergunta PICO, busca em 8 bases, triagem em duplicata, extração de dados.", "Artigo de revisão + protocolo registrado"],
+  ["1", "var(--accent)", "Screening metabólico basal", "Quantificação de GSH/GSSG em S. passalidarum vs. S. cerevisiae PE-2, em glicose e xilose, por ensaio de reciclagem (DTNB/Tietze).", "Primeira quantificação de GSH na espécie — ponto de decisão go/no-go"],
+  ["2", "var(--amber)", "Indução por estresse e enxofre", "Curva de resposta a sulfato, suplementação de cisteína/glutamato/glicina, exposição a furfural, HMF, ácido acético e H₂O₂.", "Mapa de resposta do pool de GSH"],
+  ["3", "var(--plum)", "Engenharia metabólica e ALE", "Superexpressão de GSH1/GSH2, fusão Gsh1-Gsh2, knock-out de ECM38, e evolução adaptativa laboratorial sob pressão oxidativa.", "Cepa superprodutora selecionada"],
+  ["4", "var(--green)", "Bioprocesso em biorreator", "Batelada alimentada com controle de OD (DO-stat), alimentação de precursores, migração de xilose pura para hidrolisado real.", "Estratégia de fed-batch validada"],
+  ["5", "var(--rust)", "Downstream e estabilização", "Comparação de métodos de lise (térmica, enzimática, alta pressão) e otimização de spray drying com estudo de shelf-life.", "Ingrediente em pó caracterizado"],
+];
+
+const phaseList = document.getElementById('phase-list');
+phases.forEach(([num, color, title, desc, deliv], i) => {
+  const el = document.createElement('div');
+  el.className = 'phase';
+  el.innerHTML = `
+    <div class="phase-rail">
+      <div class="phase-dot" style="background:${color}">${num}</div>
+      ${i < phases.length - 1 ? '<div class="phase-line"></div>' : ''}
+    </div>
+    <div class="phase-body">
+      <p class="phase-title">${title}</p>
+      <p class="phase-desc">${desc}</p>
+      <p class="phase-deliverable">→ ${deliv}</p>
+    </div>
+  `;
+  phaseList.appendChild(el);
+});
+</script>
+
+<script src="nav.js"></script>
+<script>renderNav('projeto');</script>
+</body>
+</html>

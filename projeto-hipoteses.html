@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hipóteses — Fernando Curbani</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <div class="crumb"><a href="index.html">Início</a>
+    <span class="sep">/</span>
+    <a href="projeto-doutorado.html">Projeto Doutorado</a>
+    <span class="sep">/</span>
+    <span class="current">Hipóteses</span></div>
+  <div class="hero">
+    <p class="hero-eyebrow">Projeto Doutorado</p>
+    <h1>Hipóteses de trabalho</h1>
+    <p class="subtitle">Cinco hipóteses testáveis, cada uma com um critério explícito de refutação. A H2 já passou por uma correção — veja no diário de bordo.</p>
+  </div>
+
+  <section>
+    <div class="hyp-list" id="hyp-list"></div>
+  </section>
+  <style>
+    .hyp-list { display: flex; flex-direction: column; gap: 10px; }
+    .hyp { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; cursor: pointer; }
+    .hyp-head { display: flex; align-items: center; gap: 10px; }
+    .hyp-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; background: color-mix(in srgb, var(--accent) 12%, white); color: var(--accent); padding: 2px 7px; border-radius: 5px; flex-shrink: 0; }
+    .hyp-title { font-size: 13.5px; flex: 1; line-height: 1.5; }
+    .hyp-revised { font-size: 10.5px; font-weight: 600; color: var(--rust); background: color-mix(in srgb, var(--rust) 12%, white); padding: 2px 8px; border-radius: 20px; flex-shrink: 0; }
+    .hyp-chevron { width: 14px; height: 14px; color: var(--ink-soft); flex-shrink: 0; transition: transform 0.2s; }
+    .hyp.open .hyp-chevron { transform: rotate(180deg); }
+    .hyp-detail { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .hyp.open .hyp-detail { max-height: 300px; }
+    .hyp-detail-inner { padding-top: 12px; margin-top: 10px; border-top: 0.5px solid var(--line); font-size: 13px; color: var(--ink-soft); line-height: 1.65; }
+  </style>
+  <script>
+    const hyps = [
+      ["H1", "S. passalidarum acumula GSH intracelular em nível igual ou superior ao de uma cepa industrial de S. cerevisiae sob condição basal (YPD).", "Conteúdo específico (mg·g⁻¹ DCW) significativamente inferior ao controle (α = 0,05).", false],
+      ["H2", "Em S. passalidarum, o estado redox do pool de glutationa (razão GSH/GSSG) durante o crescimento em xilose é determinado pelo balanço de NADPH entre a demanda (assimilação de enxofre + Glr1), o dreno pela xilose redutase NADPH-dependente (XYL1.1) e a oferta pela PPP oxidativa.", "Razão GSH/GSSG em xilose ≤ glicose e/ou ausência de deslocamento da expressão XYL1.1 → XYL1.2.", true],
+      ["H3", "A exposição a furfural/HMF em concentração subletal induz aumento do pool de glutationa total.", "Ausência de aumento significativo dose-dependente.", false],
+      ["H4", "A suplementação de enxofre e de cisteína eleva o conteúdo de GSH de forma dose-dependente até saturação.", "Ausência de resposta à suplementação.", false],
+      ["H5", "A superexpressão de GSH1 em S. passalidarum eleva o GSH intracelular, sendo esta a etapa limitante também neste organismo.", "Ausência de aumento significativo frente à cepa parental.", false],
+    ];
+    const hypList = document.getElementById('hyp-list');
+    hyps.forEach(([tag, text, refut, revised]) => {
+      const el = document.createElement('div');
+      el.className = 'hyp';
+      el.innerHTML = `
+        <div class="hyp-head">
+          <span class="hyp-tag">${tag}</span>
+          <span class="hyp-title">${text}</span>
+          ${revised ? '<span class="hyp-revised">revisada</span>' : ''}
+          <svg class="hyp-chevron" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="hyp-detail"><div class="hyp-detail-inner"><b>Critério de refutação:</b> ${refut}</div></div>
+      `;
+      el.addEventListener('click', () => el.classList.toggle('open'));
+      hypList.appendChild(el);
+    });
+  </script>
+
+  <footer>Fernando Curbani · Programa de Pós-Graduação em Engenharia de Alimentos · UFSC</footer>
+</div>
+
+<script src="nav.js"></script>
+<script>renderNav('projeto-hipoteses');</script>
+</body>
+</html>

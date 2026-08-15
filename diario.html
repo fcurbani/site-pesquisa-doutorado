@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diário de bordo — Fernando Curbani</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+<style>
+  :root {
+    --bg: #EEF1F4; --ink: #1A2333; --ink-soft: #4B5768;
+    --card: #FFFFFF; --line: #D7DEE5; --accent: #6B4A82;
+    --red: #B23A48; --green: #3B6E4F; --amber: #B8863B;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 100px; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  nav {
+    display: flex; gap: 22px; align-items: center; padding: 22px 24px;
+    max-width: 780px; margin: 0 auto; font-size: 13.5px;
+  }
+  nav a { color: var(--ink-soft); text-decoration: none; }
+  nav a:hover { color: var(--ink); }
+  nav .brand { font-weight: 600; color: var(--ink); margin-right: auto; }
+
+  .hero { padding: 26px 0 10px; }
+  .hero-eyebrow {
+    font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent); margin: 0 0 14px; font-weight: 600;
+  }
+  h1 {
+    font-family: 'Source Serif 4', serif; font-weight: 700;
+    font-size: 34px; line-height: 1.2; margin: 0 0 12px;
+  }
+  .subtitle { font-size: 15px; color: var(--ink-soft); line-height: 1.6; margin: 0 0 40px; max-width: 560px; }
+
+  .timeline { position: relative; padding-left: 26px; border-left: 1.5px solid var(--line); }
+
+  .entry { position: relative; margin-bottom: 46px; }
+  .entry:last-child { margin-bottom: 0; }
+  .entry::before {
+    content: ''; position: absolute; left: -32px; top: 5px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--entry-color, var(--accent)); box-shadow: 0 0 0 4px var(--bg);
+  }
+
+  .entry-date {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--ink-soft); margin-bottom: 6px;
+  }
+  .entry-tag {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    padding: 2px 9px; border-radius: 20px; margin-bottom: 10px;
+    background: color-mix(in srgb, var(--entry-color, var(--accent)) 14%, white);
+    color: var(--entry-color, var(--accent));
+  }
+  .entry-title {
+    font-family: 'Source Serif 4', serif; font-size: 21px; font-weight: 600;
+    margin: 0 0 12px; line-height: 1.35;
+  }
+  .entry p.body-text { font-size: 14px; line-height: 1.75; color: var(--ink-soft); margin: 0 0 14px; }
+  .entry p.body-text strong { color: var(--ink); font-weight: 600; }
+  .entry code {
+    font-family: 'JetBrains Mono', monospace; font-size: 12.5px;
+    background: var(--bg); padding: 1px 5px; border-radius: 4px;
+  }
+
+  .diff { border-radius: 10px; overflow: hidden; border: 1px solid var(--line); margin: 16px 0; }
+  .diff-block { padding: 14px 18px; font-size: 13px; line-height: 1.65; }
+  .diff-old { background: color-mix(in srgb, var(--red) 7%, white); border-bottom: 1px solid var(--line); }
+  .diff-new { background: color-mix(in srgb, var(--green) 7%, white); }
+  .diff-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px;
+  }
+  .diff-old .diff-label { color: var(--red); }
+  .diff-new .diff-label { color: var(--green); }
+  .diff-old p, .diff-new p { margin: 0; color: var(--ink); }
+
+  .why-box {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 14px 18px; margin-top: 14px;
+  }
+  .why-box .diff-label { color: var(--amber); }
+  .why-box p { margin: 0; font-size: 13px; color: var(--ink-soft); line-height: 1.65; }
+
+  footer {
+    text-align: center; margin-top: 60px; padding-top: 24px;
+    border-top: 0.5px solid var(--line); font-size: 12.5px; color: var(--ink-soft);
+  }
+</style>
+</head>
+<body>
+
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <div class="hero">
+    <p class="hero-eyebrow">Diário de bordo</p>
+    <h1>O andamento, em ordem cronológica</h1>
+    <p class="subtitle">Experimentos, decisões, e — talvez o mais valioso — os momentos em que uma hipótese precisou ser corrigida. Ciência de verdade tem rascunho.</p>
+  </div>
+
+  <div class="timeline">
+
+    <div class="entry" id="entrada-1" style="--entry-color: var(--red)">
+      <div class="entry-date">Agosto de 2026</div>
+      <span class="entry-tag">Correção de hipótese</span>
+      <h2 class="entry-title">A xilose não gera NADPH pela via das pentoses fosfato — revisando a H2</h2>
+
+      <p class="body-text">
+        Na primeira versão da proposta, a hipótese H2 e o "vetor de cofator" (seção 4.2) afirmavam que
+        o catabolismo de xilose passa obrigatoriamente pela via das pentoses fosfato (PPP) e que, por
+        isso, favoreceria a disponibilidade de NADPH — cofator do qual a Glr1 depende para manter o pool
+        de glutationa na forma reduzida.
+      </p>
+      <p class="body-text">
+        Só que isso está errado. A PPP tem dois ramos, e <strong>só o ramo oxidativo (Zwf1/Gnd1) produz
+        NADPH</strong>. A xilose entra na via já em xilulose-5-fosfato — <strong>a jusante</strong> do
+        ramo oxidativo. Ou seja: catabolizar xilose não passa pelo trecho que gera NADPH. Pior: a
+        primeira enzima da via de assimilação da xilose, a xilose redutase <code>XYL1.1</code>, é
+        NADPH-dependente — ela <em>consome</em> o cofator, não o produz.
+      </p>
+
+      <div class="diff">
+        <div class="diff-block diff-old">
+          <span class="diff-label">Antes</span>
+          <p>"A via das pentoses fosfato, obrigatória no catabolismo de xilose, é a principal fonte
+          citosólica de NADPH. […] há razão bioquímica concreta para hipotetizar que o crescimento em
+          xilose favoreça a manutenção do pool reduzido."</p>
+        </div>
+        <div class="diff-block diff-new">
+          <span class="diff-label">Depois</span>
+          <p>"O ramo oxidativo da PPP é a principal fonte citosólica de NADPH — mas a xilose entra na
+          via a jusante desse ramo, e sua assimilação pela XYL1.1 consome NADPH. O efeito do
+          crescimento em xilose sobre o pool reduzido não é automático: depende do balanço entre esse
+          dreno, a oferta pela PPP oxidativa (mobilizada por demanda) e a preferência de cofator das
+          duas xilose redutases (XYL1.1/XYL1.2)."</p>
+        </div>
+      </div>
+
+      <div class="why-box">
+        <span class="diff-label">Por que isso importa</span>
+        <p>A hipótese não morre — fica mais forte. Em vez de uma afirmação genérica ("xilose gera
+        NADPH"), agora é um modelo de <strong>competição/alocação de NADPH</strong>, específico do
+        organismo e testável diretamente nos dados de RNA-seq já disponíveis (expressão relativa de
+        XYL1.1 vs. XYL1.2). Isso também ajustou o objetivo específico 3 e vai orientar a leitura da
+        Fase 2.</p>
+      </div>
+
+      <p class="body-text" style="margin-top:14px;">
+        Também ficaram registrados refinamentos menores nas hipóteses H1, H3, H4 e H5 — nenhum muda a
+        direção do projeto, mas todos deixam os critérios de refutação mais precisos. Ver a versão
+        atualizada na <a href="projeto-gsh.html">página do projeto</a>.
+      </p>
+    </div>
+
+  </div>
+
+  <footer>Fernando Curbani · Programa de Pós-Graduação em Engenharia de Alimentos · UFSC</footer>
+</div>
+
+<script src="nav.js"></script>
+<script>renderNav('diario');</script>
+</body>
+</html>

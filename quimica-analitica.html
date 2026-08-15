@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Química Analítica — Fernando Curbani</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <div class="crumb"><a href="index.html">Início</a>
+    <span class="sep">/</span>
+    <a href="conhecimento.html">Fonte de Conhecimento</a>
+    <span class="sep">/</span>
+    <span class="current">Química Analítica</span></div>
+  <div class="hero">
+    <p class="hero-eyebrow">Fonte de Conhecimento</p>
+    <h1>Química Analítica</h1>
+    <p class="subtitle">Os métodos usados para enxergar uma molécula que oxida em segundos.</p>
+  </div>
+
+  <section>
+    <h2>Ensaio de reciclagem (DTNB / método de Tietze)</h2>
+    <p class="body-text">
+      A GSH reduz o reagente de Ellman (DTNB), liberando TNB, um cromóforo amarelo com absorbância a
+      412 nm. A adição de glutationa redutase e NADPH ao meio converte continuamente o GSSG formado de
+      volta a GSH, que reage novamente com o DTNB — amplificando o sinal e ampliando a faixa de detecção.
+      É o método padrão-ouro para glutationa total, em formato de microplaca de 96 poços.
+    </p>
+  </section>
+
+  <section>
+    <h2>Especiação GSH vs. GSSG</h2>
+    <p class="body-text">
+      Para separar as duas formas, a alíquota é dividida: uma parte segue para glutationa total pelo
+      ensaio direto; outra é derivatizada com <strong>2-vinilpiridina</strong> (que mascara a GSH livre)
+      antes do ensaio, quantificando apenas GSSG. GSH = Total − 2×GSSG.
+    </p>
+  </section>
+
+  <section>
+    <h2>Validação ortogonal</h2>
+    <p class="body-text">
+      O DTNB não é específico para GSH — reage com qualquer tiol livre. Por isso, um subconjunto
+      representativo (~20% das amostras) é confirmado por <strong>HPLC</strong> (detecção UV ou
+      eletroquímica) ou <strong>LC-MS/MS</strong>.
+    </p>
+  </section>
+
+  <footer>Fernando Curbani · Programa de Pós-Graduação em Engenharia de Alimentos · UFSC</footer>
+</div>
+
+<script src="nav.js"></script>
+<script>renderNav('quimica-analitica');</script>
+</body>
+</html>
