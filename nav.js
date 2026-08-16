@@ -27,6 +27,9 @@ const SITE_MENU = [
     { id: "reagentes", label: "Reagentes", href: "reagentes.html" },
     { id: "metodologia-artigos", label: "Artigos Metodologia", href: "metodologia-artigos.html" },
   ]},
+  { id: "pessoal", label: "Projetos Pessoais", href: "projetos-pessoais.html", children: [
+    { id: "utopia-solarpunk", label: "Utopia-solarpunk", href: "utopia-solarpunk.html" },
+  ]},
 ];
 
 function renderNav(activeId) {
@@ -62,7 +65,6 @@ function renderNav(activeId) {
         </button>
       </div>
       <div class="nav-items">${itemsHtml}</div>
-      <a class="side-link" href="biologia-index.html" title="Projeto pessoal à parte">🧬 Biologia</a>
     </nav>
   `;
 

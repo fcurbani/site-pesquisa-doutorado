@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Utopia-solarpunk — Fernando Curbani</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+<style>
+  :root { --accent: #3B6E4F; --amber: #B8863B; }
+  .manifesto-open {
+    font-family: 'Source Serif 4', serif; font-size: 16px; line-height: 1.85;
+    color: var(--ink); background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 28px 30px; margin-bottom: 32px;
+  }
+  .manifesto-open strong { color: var(--accent); }
+  .sigma { font-style: italic; }
+
+  .acc-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 36px; }
+  .acc {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 16px 20px; cursor: pointer;
+  }
+  .acc-head { display: flex; align-items: center; gap: 12px; }
+  .acc-icon { font-size: 18px; flex-shrink: 0; }
+  .acc-title { font-size: 14.5px; font-weight: 600; flex: 1; }
+  .acc-chevron { width: 15px; height: 15px; color: var(--ink-soft); flex-shrink: 0; transition: transform 0.2s; }
+  .acc.open .acc-chevron { transform: rotate(180deg); }
+  .acc-detail { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+  .acc.open .acc-detail { max-height: 2000px; }
+  .acc-detail-inner {
+    padding-top: 14px; margin-top: 12px; border-top: 0.5px solid var(--line);
+    font-size: 13.5px; color: var(--ink-soft); line-height: 1.75;
+  }
+  .acc-detail-inner p { margin: 0 0 12px; }
+  .acc-detail-inner p:last-child { margin-bottom: 0; }
+  .acc-detail-inner strong { color: var(--ink); }
+
+  .manifesto-close {
+    font-family: 'Source Serif 4', serif; font-size: 15.5px; line-height: 1.9;
+    color: #fff; background: #1B2B22; border-radius: 14px; padding: 34px 32px;
+  }
+  .manifesto-close p { margin: 0 0 16px; }
+  .manifesto-close p:last-child { margin-bottom: 0; }
+  .manifesto-close .sig { text-align: right; font-style: italic; opacity: 0.85; margin-top: 24px; }
+</style>
+</head>
+<body>
+
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <div class="crumb"><a href="index.html">Início</a>
+    <span class="sep">/</span>
+    <a href="projetos-pessoais.html">Projetos Pessoais</a>
+    <span class="sep">/</span>
+    <span class="current">Utopia-solarpunk</span></div>
+  <div class="hero">
+    <p class="hero-eyebrow">Projeto pessoal · ficção especulativa</p>
+    <h1>Utopia-solarpunk</h1>
+    <p class="subtitle">Um manifesto da economia baseada em termodinâmica — um exercício de imaginação sobre como a humanidade poderia reorganizar tudo, da moeda às cidades, seguindo as leis da física em vez de ignorá-las.</p>
+  </div>
+
+  <div class="manifesto-open">
+    <p>Seja bem-vindo ao projeto da Sexta Revolução Industrial: <strong>a Revolução Ecológico-Termodinâmica</strong>
+    — ou simplesmente <span class="sigma">Indústria Σ</span> (Indústria Sigma, o símbolo matemático do
+    somatório, representando a integração total de todos os fluxos da Terra).</p>
+    <p style="margin-bottom:0;">Nesta nova era, as regras do capitalismo tradicional são reescritas usando as
+    equações de Clausius, Boltzmann e Schrödinger. O PIB foi extinto. O indicador de sucesso de um país
+    agora é o <strong>FBE — Fluxo de Baixa Entropia</strong>.</p>
+  </div>
+
+  <div class="acc-list" id="acc-list"></div>
+
+  <div class="manifesto-close">
+    <p><strong>📜 Manifesto para a Humanidade: O Despertar da Era Σ</strong></p>
+    <p>Por séculos, caminhamos na escuridão de uma ilusão perigosa: que o sucesso de uma civilização se
+    mede pelo crescimento infinito, pelo acúmulo de moedas abstratas e pela exploração cega dos recursos
+    do planeta. Tratamos a Terra como um estoque sem fim e uma lixeira sem fundo.</p>
+    <p>Hoje, decretamos o fim dessa era de desperdício. A física nos ensinou que a energia não pode ser
+    criada e que o cosmos caminha naturalmente para a desordem — mas também nos deu o maior de todos os
+    segredos: a vida é a ferramenta mais bonita e poderosa da natureza para combater o caos. Somos ilhas
+    de ordem, feitas para gerar negentropia — para transformar a luz bruta do Sol em consciência, beleza
+    e organização.</p>
+    <p>A Indústria Σ não é apenas uma nova forma de produzir; é um novo pacto de sobrevivência e simbiose
+    com o universo. O Joule é a nossa única linha de base. Nossas cidades serão florestas vivas. Nossas
+    tecnologias respeitarão a matéria. Nossa expansão será consciente.</p>
+    <p>O envelhecimento, a morte e o fim dos tempos não são nossos inimigos — são apenas as regras do
+    grande relógio cósmico. Viver é a arte de resistir à desordem através da inteligência, do amor e do
+    equilíbrio.</p>
+    <p style="margin-bottom:0;"><strong>Nós não somos os donos da Terra. Nós somos o cérebro da Terra.</strong></p>
+    <p class="sig">Bem-vindos à Era Σ. Bem-vindos à Era do Fluxo.</p>
+  </div>
+
+  <footer>Fernando Curbani · Projeto Pessoal · fora do escopo do doutorado</footer>
+</div>
+
+<script src="nav.js"></script>
+<script>renderNav('utopia-solarpunk');</script>
+<script>
+const sections = [
+  ["💳", "A nova moeda: o Cartão Joule-Caloria", `
+    <p>O dinheiro de papel e as criptomoedas baseadas em computação matemática foram proibidos por
+    gastarem energia à toa. A economia passa a rodar sob a Primeira Lei da Termodinâmica.</p>
+    <p><strong>O salário energético:</strong> todo cidadão e empresa recebe uma cota mensal de Joules.</p>
+    <p><strong>O custo real:</strong> ao comprar um produto, você não paga pelo "valor de mercado", mas
+    pela sua <em>Pegada Entrópica</em>. Um casaco sintético custa fortunas em Joules por gerar muita
+    desordem química para ser feito; um casaco de fibra de cogumelo local custa quase nada, pois cresceu
+    usando o fluxo natural do Sol.</p>
+    <p style="margin-bottom:0;"><strong>Proibido acumular calor:</strong> o dinheiro perde valor sozinho
+    com o tempo se ficar parado, imitando a dissipação natural do calor — forçando as pessoas a
+    investir seus Joules rapidamente em projetos reais de reflorestamento, educação ou infraestrutura
+    biológica.</p>
+  `],
+  ["🏭", "Os motores industriais: tecnologia solarpunk de fluxo direto", `
+    <p>As fábricas não tentam mais "vencer" a natureza — funcionam como estruturas dissipativas
+    perfeitas, imitando uma floresta madura.</p>
+    <p><strong>Fábricas fotossintéticas:</strong> em vez de chaminés, fachadas vivas cobertas por
+    biobaterias de algas sugam CO₂ das cidades e o transformam em bioplásticos degradáveis e oxigênio
+    puro.</p>
+    <p><strong>Bio-IoT:</strong> computadores de silício são substituídos por computadores biológicos
+    feitos de DNA e microtúbulos celulares, processando dados com a energia da glicose — 99% menos
+    energia, sem aquecer o planeta.</p>
+    <p style="margin-bottom:0;"><strong>Manufatura de zero desperdício:</strong> nada é colado ou soldado
+    de forma irreversível. Quando um produto quebra, um reator ultrassônico separa os átomos
+    perfeitamente, prontos para virar algo novo com custo zero de entropia.</p>
+  `],
+  ["🌇", "Cidades e natureza: a simbiose obrigatoriamente aberta", `
+    <p>O ser humano deixa de ser um predador e passa a atuar como o zelador termodinâmico do planeta.</p>
+    <p><strong>Cidades compactas:</strong> interligadas por trens magnéticos que geram energia ao frear;
+    prédios revestidos com tintas quânticas que absorvem o calor urbano e o transformam em eletricidade.</p>
+    <p><strong>Cadeia alimentar local:</strong> transportar comida por avião ou navio é crime de alta
+    entropia — a alimentação vem de fazendas verticais urbanas no topo dos edifícios.</p>
+    <p style="margin-bottom:0;"><strong>Reflorestamento termodinâmico:</strong> metade do planeta vira
+    reserva ecológica intocada — as grandes florestas são os melhores "ar-condicionados" naturais do
+    universo, devolvendo o calor da Terra ao espaço por evapotranspiração.</p>
+  `],
+  ["⚖️", "Justiça termodinâmica: o código de leis da Indústria Sigma", `
+    <p>A justiça não julga com base na moral abstrata, mas no impacto termodinâmico. O crime não é
+    roubar papel-moeda, mas forçar o universo a gerar desordem inútil.</p>
+    <p><strong>Crime de alta entropia (grau máximo):</strong> desperdício deliberado de energia livre ou
+    quebra irreversível de materiais complexos. Pena: perda da cota de Joules e Trabalho Negentrópico —
+    restaurar ecossistemas degradados até pagar a dívida com a biosfera.</p>
+    <p><strong>Obsolescência induzida (empresarial):</strong> projetar produtos não modulares ou que
+    dificultem a reciclagem. Pena: estatização da fábrica pelas diretrizes ecológicas.</p>
+    <p style="margin-bottom:0;"><strong>Poluição térmica dispersa:</strong> deixar motores ligados à toa
+    ou descartar resíduos fora dos reatores de separação. Pena: multa instantânea no Cartão
+    Joule-Caloria.</p>
+  `],
+  ["🌅", "Um dia comum na rotina de um cidadão Sigma", `
+    <p>A vida de Alan, morador da metrópole solarpunk de Nova Bios:</p>
+    <p><strong>06:00 — Despertar metabólico:</strong> os primeiros fótons do Sol acordam Alan. Sua casa,
+    revestida de tinta quântica térmica, guardou o calor do dia anterior para a noite fria.</p>
+    <p><strong>08:00 — Transporte de entropia zero:</strong> o Metrô Magnético opera com energia
+    cinética recuperada das frenagens — a viagem custa apenas alguns míseros Joules da cota mensal.</p>
+    <p><strong>12:00 — Almoço negentrópico:</strong> a comida foi colhida a menos de 10 metros, no topo
+    do próprio prédio. Os restos alimentam uma biobateria local que gera a luz das mesas à noite.</p>
+    <p style="margin-bottom:0;"><strong>17:00 — Organização pessoal:</strong> Alan entende que combater
+    a desordem diária — inclusive a da própria mente — é parte da física de viver bem.</p>
+  `],
+  ["🎓", "A escola de negentropia: educando para o fluxo", `
+    <p>Salas de aula com carteiras enfileiradas e decoreba são substituídas por laboratórios de fluxo
+    aberto. As crianças não aprendem matérias separadas; aprendem como a energia se transforma.</p>
+    <p><strong>Alfabetização termodinâmica (infância):</strong> kits modulares magnéticos ensinam, desde
+    os 6 anos, que construir exige energia e que desmontar de forma errada gera bagunça — inclusive
+    arrumar o próprio quarto vira lição prática de física biológica.</p>
+    <p><strong>Contabilidade cósmica (adolescência):</strong> calcular o balanço energético das coisas ao
+    redor — um exame final é desmontar um objeto quebrado gastando o mínimo de energia possível.</p>
+    <p style="margin-bottom:0;"><strong>Pedagogia humanocêntrica:</strong> metade do tempo em matemática
+    quântica, metade em florestas tropicais, aprendendo com o ecossistema como uma estrutura viva dissipa
+    calor perfeitamente.</p>
+  `],
+  ["🌾", "O sistema alimentar: fazendas verticais e ciclo fechado", `
+    <p>A agricultura tradicional que desmata para monocultura é crime de altíssima entropia. A produção
+    acontece onde as pessoas estão: nas cidades.</p>
+    <p><strong>Fazendas verticais urbanas:</strong> sistemas hidropônicos e aeropônicos gastam 95% menos
+    água; iluminação LED nas frequências exatas da clorofila faz os alimentos crescerem até 3× mais
+    rápido, sem agrotóxicos.</p>
+    <p><strong>Agricultura celular:</strong> a pecuária tradicional é abolida por ser um motor térmico
+    ineficiente (de 100 calorias de ração, uma vaca devolve só 10 em carne). Carne cultivada em
+    biorreatores e superalimentos de algas e fungos assumem a base nutricional.</p>
+    <p style="margin-bottom:0;"><strong>Ciclo fechado de nutrientes:</strong> digestores biológicos de
+    bairro transformam restos de comida em adubo líquido e biogás — zero desperdício, ciclo
+    perfeitamente fechado.</p>
+  `],
+  ["🩺", "Saúde: a medicina da regeneração celular", `
+    <p>A doença não é vista como algo a curar com compostos genéricos, mas como uma quebra local de
+    informação — um surto de entropia no corpo.</p>
+    <p><strong>Diagnóstico termodinâmico:</strong> uma câmara de ressonância quântica mede o mapa térmico
+    e o fluxo de elétrons das células, detectando uma falha antes mesmo dos sintomas aparecerem.</p>
+    <p><strong>Terapia por alinhamento magnético:</strong> frequências magnéticas reorganizam proteínas
+    danificadas por radicais livres, forçando a auto-regeneração com custo quase zero de Joules
+    biológicos.</p>
+    <p style="margin-bottom:0;"><strong>Micro-robôs de DNA:</strong> em casos graves, nanorrobôs de DNA
+    navegam pelo sangue usando glicose como combustível e cortam o suprimento de energia de células
+    doentes, isolando o surto de entropia sem afetar o tecido saudável.</p>
+  `],
+  ["👕", "Vestuário: roupas vivas e de baixa entropia", `
+    <p>A moda rápida com tecidos de plástico, que levavam séculos para sumir, foi banida. As roupas
+    passam a ser estruturas biológicas semi-vivas.</p>
+    <p><strong>Tecidos de micélio e algas:</strong> cultivados em moldes 3D a partir de raízes de
+    cogumelo ou polímeros de algas marinhas, já no formato exato do corpo — zero desperdício de
+    retalhos.</p>
+    <p><strong>Roupas fotossintéticas:</strong> infundidas com microalgas vivas, absorvem CO₂ e liberam
+    oxigênio enquanto você caminha ao sol, e se autorreparam pequenos rasgos.</p>
+    <p style="margin-bottom:0;"><strong>Dissipação térmica dinâmica:</strong> canais microscópicos imitam
+    a pele animal, abrindo para liberar calor em dias quentes e se contraindo em dias frios. No fim da
+    vida útil, a roupa vira adubo em poucos dias.</p>
+  `],
+  ["🚀", "Exploração espacial: a conquista de novos fluxos energéticos", `
+    <p>Foguetes queimando combustível químico poluente foram abandonados. O espaço é o maior oceano de
+    energia livre do universo — e a colheita respeita a física.</p>
+    <p><strong>Veleiros solares quânticos:</strong> velas de grafeno empurradas diretamente pelos fótons
+    da luz solar e pelo vento estelar, sem carregar combustível.</p>
+    <p><strong>Elevadores espaciais de baixa entropia:</strong> um cabo de nanotubos de carbono preso a
+    um asteroide em órbita — a cabine que desce gera, pela gravidade, a eletricidade que faz a outra
+    subir.</p>
+    <p style="margin-bottom:0;"><strong>Terraformação por dissipação:</strong> bio-fábricas automatizadas
+    espalham microalgas superdissipadoras em Marte ou na Lua, que digerem rochas e atmosfera ao longo de
+    décadas até sustentar as primeiras colônias.</p>
+  `],
+];
+
+const list = document.getElementById('acc-list');
+sections.forEach(([icon, title, html]) => {
+  const el = document.createElement('div');
+  el.className = 'acc';
+  el.innerHTML = `
+    <div class="acc-head">
+      <span class="acc-icon">${icon}</span>
+      <span class="acc-title">${title}</span>
+      <svg class="acc-chevron" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="acc-detail"><div class="acc-detail-inner">${html}</div></div>
+  `;
+  el.addEventListener('click', () => el.classList.toggle('open'));
+  list.appendChild(el);
+});
+</script>
+</body>
+</html>

@@ -51,13 +51,6 @@ body {
 .dd-item:hover { background: var(--bg); color: var(--ink); }
 .dd-item.is-active { color: var(--accent); font-weight: 600; }
 
-.side-link {
-  font-size: 12.5px; color: var(--ink-soft); text-decoration: none;
-  padding: 6px 10px; border-radius: 20px; border: 1px solid var(--line);
-  white-space: nowrap; margin-left: 8px;
-}
-.side-link:hover { border-color: var(--green); color: var(--green); }
-
 .burger { display: none; background: none; border: none; padding: 6px; cursor: pointer; color: var(--ink); flex-shrink: 0; }
 .burger svg { width: 20px; height: 20px; }
 
@@ -71,8 +64,6 @@ body {
     width: 100%; margin-top: 12px; gap: 0;
   }
   .sitenav.nav-open .nav-items { display: flex; }
-  .sitenav.nav-open .side-link { display: block; margin: 10px 0 0; width: fit-content; }
-  .side-link { display: none; }
   .nav-item { width: 100%; }
   .nav-link { justify-content: space-between; width: 100%; padding: 11px 8px; }
   .dropdown {
