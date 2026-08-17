@@ -86,6 +86,10 @@
     margin: 0; font-size: 14px; color: var(--ink-soft); line-height: 1.6;
     font-style: italic;
   }
+  .quote p.quote-attr {
+    margin-top: 8px; font-size: 12px; font-style: normal; color: var(--ink-soft); opacity: 0.85;
+  }
+  .quote p.quote-attr em { font-style: italic; }
 
   .cards {
     display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
@@ -180,12 +184,23 @@
     <h1>Fernando Curbani</h1>
     <p>Doutorando em Engenharia de Alimentos na UFSC. Este espaço registra os experimentos, as hipóteses (e suas correções), e a evolução da pesquisa em tempo real — para bem além da tese em si.</p>
     <div class="quote">
-      <p>""A vida parece ser o comportamento ordenado e regido por leis da matéria, baseado não exclusivamente em sua tendência de ir da ordem para a desordem, mas baseado em parte em uma ordem existente que é mantida."
-— Erwin Schrödinger (em "O que é a vida?", 1944)"</p>
+      <p>"A vida parece ser o comportamento ordenado e regido por leis da matéria, baseado não exclusivamente em sua tendência de ir da ordem para a desordem, mas baseado em parte em uma ordem existente que é mantida."</p>
+      <p class="quote-attr">— Erwin Schrödinger, em <em>O que é a vida?</em> (1944)</p>
     </div>
   </div>
 
   <div class="cards">
+    <a class="card c-sobre" href="sobre.html">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>
+      </div>
+      <h2>Sobre mim</h2>
+      <p>Programa, orientação e contexto da pesquisa.</p>
+      <span class="card-cta">Saiba mais
+        <svg viewBox="0 0 20 20" fill="none"><path d="M7 5l6 5-6 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </a>
+
     <a class="card c-diario" href="diario.html">
       <span class="badge live">atualizado</span>
       <div class="card-icon">
@@ -198,18 +213,7 @@
       </span>
     </a>
 
-    <a class="card full c-crono" href="cronograma.html">
-      <div class="card-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
-      </div>
-      <h2>Cronograma semanal</h2>
-      <p>O quadro com o que está planejado, em andamento e concluído — atualizado toda semana.</p>
-      <span class="card-cta">Ver o quadro
-        <svg viewBox="0 0 20 20" fill="none"><path d="M7 5l6 5-6 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </span>
-    </a>
-
-    <a class="card c-projeto" href="projeto-gsh.html">
+    <a class="card full c-projeto" href="projeto-doutorado.html">
       <div class="card-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 2h6M10 2v6.5L4.5 18a2 2 0 0 0 1.7 3h11.6a2 2 0 0 0 1.7-3L14 8.5V2"/><line x1="7.5" y1="14" x2="16.5" y2="14"/></svg>
       </div>
@@ -220,24 +224,13 @@
       </span>
     </a>
 
-    <a class="card c-sobre" href="sobre.html">
+    <a class="card full c-crono" href="cronograma.html">
       <div class="card-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
       </div>
-      <h2>Sobre</h2>
-      <p>Programa, orientação e contexto da pesquisa.</p>
-      <span class="card-cta">Saiba mais
-        <svg viewBox="0 0 20 20" fill="none"><path d="M7 5l6 5-6 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </span>
-    </a>
-
-    <a class="card c-bio" href="biologia-index.html">
-      <div class="card-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3c9 3 3 9 12 18M18 3C9 6 15 12 6 21"/></svg>
-      </div>
-      <h2>Biologia — do Renascimento à IA</h2>
-      <p>Um projeto à parte: linha do tempo e galeria com os 61 marcos que moldaram a biologia.</p>
-      <span class="card-cta">Explorar
+      <h2>Cronograma semanal</h2>
+      <p>O quadro com o que está planejado, em andamento e concluído — atualizado toda semana.</p>
+      <span class="card-cta">Ver o quadro
         <svg viewBox="0 0 20 20" fill="none"><path d="M7 5l6 5-6 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </span>
     </a>
