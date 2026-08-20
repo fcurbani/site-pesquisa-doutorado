@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linha do Tempo — Biotecnologia, Fermentações, Biorrefinarias, GSH e Spathaspora passalidarum</title>
+<style>
+  :root {
+    --ink: #1e293b;
+    --muted: #64748b;
+    --line: #cbd5e1;
+    --page-bg: #f8fafc;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--page-bg);
+    color: var(--ink);
+  }
+  header {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 40px 24px 16px;
+    text-align: center;
+  }
+  header h1 {
+    font-size: 1.7rem;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  header p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    max-width: 720px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+  .controls {
+    max-width: 980px;
+    margin: 20px auto 0;
+    padding: 0 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+  .filter-btn {
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+  }
+  .filter-btn .count {
+    background: #f1f5f9;
+    color: var(--muted);
+    border-radius: 999px;
+    padding: 1px 6px;
+    font-size: 0.72rem;
+  }
+  .filter-btn[data-theme="all"] { --c: #334155; }
+  .filter-btn:hover { border-color: var(--c); color: var(--c); }
+  .filter-btn.active { background: var(--c); border-color: var(--c); color: #fff; }
+  .filter-btn.active .count { background: rgba(255,255,255,0.25); color: #fff; }
+
+  .search-wrap {
+    max-width: 480px;
+    margin: 14px auto 0;
+    padding: 0 24px;
+  }
+  #search {
+    width: 100%;
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    font-size: 0.88rem;
+    outline: none;
+  }
+  #search:focus { border-color: #64748b; }
+
+  main {
+    max-width: 900px;
+    margin: 36px auto 80px;
+    padding: 0 24px;
+  }
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: var(--line);
+  }
+  .ev {
+    position: relative;
+    padding-left: 34px;
+    margin-bottom: 22px;
+  }
+  .ev.hidden { display: none; }
+  .ev-dot {
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--c);
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 1px var(--c);
+  }
+  .ev-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-left: 3px solid var(--c);
+    border-radius: 10px;
+    padding: 14px 18px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .ev-year {
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--c);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .ev-tag {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+  }
+  .ev-title {
+    margin: 0 0 6px;
+    font-size: 1.02rem;
+    color: var(--ink);
+  }
+  .ev-summary {
+    margin: 0 0 10px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: #334155;
+  }
+  .ev-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    border-top: 1px dashed #e2e8f0;
+    padding-top: 8px;
+  }
+  .ev-authors {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .ev-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--c);
+    text-decoration: none;
+    border: 1px solid var(--c);
+    border-radius: 6px;
+    padding: 3px 9px;
+    white-space: nowrap;
+  }
+  .ev-link:hover { background: var(--c); color: #fff; }
+  .ev-link--disabled {
+    color: var(--muted);
+    border: 1px dashed var(--line);
+    cursor: default;
+  }
+  .empty-state {
+    text-align: center;
+    color: var(--muted);
+    padding: 60px 20px;
+    display: none;
+  }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.78rem;
+    padding: 0 24px 50px;
+  }
+  @media (max-width: 640px) {
+    .ev-footer { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Linha do Tempo Cronológica</h1>
+  <p>Biotecnologia, Fermentações, Biorrefinarias, <em>Saccharomyces cerevisiae</em>, Glutationa (GSH) e <em>Spathaspora passalidarum</em> — de 1810 até pesquisas em andamento.</p>
+</header>
+
+<div class="controls">
+<button class="filter-btn active" data-theme="all">Todos <span class="count">75</span></button>
+<button class="filter-btn" data-theme="fermentacao" style="--c:#c2410c">Fermentações <span class="count">5</span></button>
+<button class="filter-btn" data-theme="gsh" style="--c:#15803d">Glutationa (GSH) <span class="count">31</span></button>
+<button class="filter-btn" data-theme="cerevisiae" style="--c:#1d4ed8">S. cerevisiae <span class="count">4</span></button>
+<button class="filter-btn" data-theme="biotecnologia" style="--c:#7e22ce">Biotecnologia <span class="count">6</span></button>
+<button class="filter-btn" data-theme="biorrefinaria" style="--c:#0f766e">Biorrefinarias <span class="count">8</span></button>
+<button class="filter-btn" data-theme="spathaspora" style="--c:#be123c">Spathaspora passalidarum <span class="count">21</span></button>
+</div>
+
+<div class="search-wrap">
+  <input id="search" type="text" placeholder="Buscar por ano, autor ou palavra-chave...">
+</div>
+
+<main>
+  <ul class="timeline" id="timeline">
+    
+  <li class="ev" data-theme="fermentacao" data-i="0">
+    <div class="ev-dot" style="--c:#c2410c"></div>
+    <div class="ev-card" style="--c:#c2410c; --bg:#fff7ed">
+      <div class="ev-year">Pré-história</div>
+      <div class="ev-tag" style="color:#c2410c; background:#fff7ed">Fermentações</div>
+      <h3 class="ev-title">Fermentação espontânea</h3>
+      <p class="ev-summary">Pão fermentado, cerveja, vinho, queijo e vinagre já eram produzidos por leveduras selvagens; evidências em pirâmides egípcias.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">—</span>
+        <a class="ev-link" href="https://pt.wikipedia.org/wiki/Fermenta%C3%A7%C3%A3o" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Wikipedia</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="fermentacao" data-i="1">
+    <div class="ev-dot" style="--c:#c2410c"></div>
+    <div class="ev-card" style="--c:#c2410c; --bg:#fff7ed">
+      <div class="ev-year">~2000 a.C.</div>
+      <div class="ev-tag" style="color:#c2410c; background:#fff7ed">Fermentações</div>
+      <h3 class="ev-title">Cerveja e vinho na Antiguidade</h3>
+      <p class="ev-summary">Cerveja e vinho já eram produzidos e consumidos pelas civilizações do Egito e da Grécia antigos.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">—</span>
+        <a class="ev-link" href="https://en.wikipedia.org/wiki/History_of_beer" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Wikipedia</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="2">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1810</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Isolamento da cistina</h3>
+      <p class="ev-summary">Wollaston isola a cistina a partir de um cálculo urinário — primeiro aminoácido relacionado à futura descoberta da glutationa a ser isolado.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Wollaston</span>
+        <a class="ev-link" href="https://doi.org/10.1098/rstl.1810.0015" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="3">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1837</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Cistina contém enxofre</h3>
+      <p class="ev-summary">Demonstrado que a cistina, isolada por Wollaston, contém enxofre em sua estrutura.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">citado por Vickery &amp; Schmidt</span>
+        <a class="ev-link" href="https://doi.org/10.1021/cr60033a001" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI (revisão histórica)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="cerevisiae" data-i="4">
+    <div class="ev-dot" style="--c:#1d4ed8"></div>
+    <div class="ev-card" style="--c:#1d4ed8; --bg:#eff6ff">
+      <div class="ev-year">1838</div>
+      <div class="ev-tag" style="color:#1d4ed8; background:#eff6ff">S. cerevisiae</div>
+      <h3 class="ev-title">Gênero Saccharomyces</h3>
+      <p class="ev-summary">Julius Meyen cria o gênero Saccharomyces, incluindo S. cerevisiae, S. pomorum e S. vini.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Julius Meyen</span>
+        <a class="ev-link" href="https://en.wikipedia.org/wiki/Saccharomyces" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Wikipedia</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="fermentacao" data-i="5">
+    <div class="ev-dot" style="--c:#c2410c"></div>
+    <div class="ev-card" style="--c:#c2410c; --bg:#fff7ed">
+      <div class="ev-year">1857</div>
+      <div class="ev-tag" style="color:#c2410c; background:#fff7ed">Fermentações</div>
+      <h3 class="ev-title">Teoria biológica da fermentação</h3>
+      <p class="ev-summary">Pasteur demonstra que a fermentação alcoólica é produzida por leveduras vivas, refutando explicações puramente químicas.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Louis Pasteur</span>
+        <a class="ev-link" href="https://en.wikipedia.org/wiki/Louis_Pasteur" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Wikipedia</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="cerevisiae" data-i="6">
+    <div class="ev-dot" style="--c:#1d4ed8"></div>
+    <div class="ev-card" style="--c:#1d4ed8; --bg:#eff6ff">
+      <div class="ev-year">1870</div>
+      <div class="ev-tag" style="color:#1d4ed8; background:#eff6ff">S. cerevisiae</div>
+      <h3 class="ev-title">Descrição formal do gênero</h3>
+      <p class="ev-summary">Reess descreve formalmente o gênero Saccharomyces e documenta ascos e ascósporos, confirmando sua posição no filo Ascomycota.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">M. Reess</span>
+        <a class="ev-link" href="https://en.wikipedia.org/wiki/Saccharomyces" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Wikipedia</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="7">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1879–1881</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Ácidos mercaptúricos</h3>
+      <p class="ev-summary">Baumann &amp; Preusse relatam a excreção urinária de ácido bromofenilmercaptúrico em cães tratados com bromobenzeno, um marco inicial no estudo de conjugados de enxofre.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Baumann &amp; Preusse</span>
+        <a class="ev-link" href="https://doi.org/10.1002/cber.187901201225" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="cerevisiae" data-i="8">
+    <div class="ev-dot" style="--c:#1d4ed8"></div>
+    <div class="ev-card" style="--c:#1d4ed8; --bg:#eff6ff">
+      <div class="ev-year">1883</div>
+      <div class="ev-tag" style="color:#1d4ed8; background:#eff6ff">S. cerevisiae</div>
+      <h3 class="ev-title">Cultura pura de levedura</h3>
+      <p class="ev-summary">Hansen isola cultura pura de levedura por diluição seriada na Cervejaria Carlsberg, iniciando o uso industrial de culturas puras na fermentação.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Emil Christian Hansen</span>
+        <a class="ev-link" href="https://en.wikipedia.org/wiki/Emil_Christian_Hansen" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Wikipedia</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="9">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1884</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Relação cisteína–cistina</h3>
+      <p class="ev-summary">Baumann demonstra a relação química entre cisteína e cistina.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Baumann</span>
+        <a class="ev-link" href="https://en.wikipedia.org/wiki/Cystine" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Wikipedia</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="cerevisiae" data-i="10">
+    <div class="ev-dot" style="--c:#1d4ed8"></div>
+    <div class="ev-card" style="--c:#1d4ed8; --bg:#eff6ff">
+      <div class="ev-year">1886</div>
+      <div class="ev-tag" style="color:#1d4ed8; background:#eff6ff">S. cerevisiae</div>
+      <h3 class="ev-title">Culturas puras em escala comercial</h3>
+      <p class="ev-summary">Adoção comercial de culturas puras de leveduras em escala industrial pela Cervejaria Carlsberg.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Cervejaria Carlsberg</span>
+        <a class="ev-link" href="https://en.wikipedia.org/wiki/Carlsberg_Group" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Wikipedia</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="11">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1888</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Descoberta do philothion</h3>
+      <p class="ev-summary">De Rey-Pailhade descobre o &quot;philothion&quot;, extrato de levedura que reage com enxofre elementar produzindo H₂S — precursor conceitual da descoberta da glutationa.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">J. de Rey-Pailhade</span>
+        <a class="ev-link" href="https://doi.org/10.1016/0968-0004(88)90148-X" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI (revisão de Meister, 1988)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="12">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1888–1907</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Caracterização do philothion</h3>
+      <p class="ev-summary">De Rey-Pailhade publica uma série de trabalhos caracterizando as propriedades do philothion.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">J. de Rey-Pailhade</span>
+        <a class="ev-link" href="https://doi.org/10.1016/0968-0004(88)90148-X" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI (revisão de Meister, 1988)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="fermentacao" data-i="13">
+    <div class="ev-dot" style="--c:#c2410c"></div>
+    <div class="ev-card" style="--c:#c2410c; --bg:#fff7ed">
+      <div class="ev-year">1897</div>
+      <div class="ev-tag" style="color:#c2410c; background:#fff7ed">Fermentações</div>
+      <h3 class="ev-title">Fermentação livre de células</h3>
+      <p class="ev-summary">Buchner demonstra que extratos sem células vivas (zimase) fermentam açúcar, refutando a teoria vitalista de Pasteur e fundando a enzimologia moderna.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Eduard Buchner</span>
+        <a class="ev-link" href="https://www.nobelprize.org/prizes/chemistry/1907/buchner/facts/" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Nobel Prize</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="biotecnologia" data-i="14">
+    <div class="ev-dot" style="--c:#7e22ce"></div>
+    <div class="ev-card" style="--c:#7e22ce; --bg:#faf5ff">
+      <div class="ev-year">~1900</div>
+      <div class="ev-tag" style="color:#7e22ce; background:#faf5ff">Biotecnologia</div>
+      <h3 class="ev-title">Produção industrial de levedura</h3>
+      <p class="ev-summary">Levedura de panificação passa a ser produzida em tanques abertos aerados; produção ampliada na Alemanha durante a 1ª Guerra Mundial.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">—</span>
+        <a class="ev-link" href="https://en.wikipedia.org/wiki/Baker%27s_yeast" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Wikipedia</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="biotecnologia" data-i="15">
+    <div class="ev-dot" style="--c:#7e22ce"></div>
+    <div class="ev-card" style="--c:#7e22ce; --bg:#faf5ff">
+      <div class="ev-year">1901</div>
+      <div class="ev-tag" style="color:#7e22ce; background:#faf5ff">Biotecnologia</div>
+      <h3 class="ev-title">Primeiro antibiótico conhecido</h3>
+      <p class="ev-summary">Isolamento da piocianase de Pseudomonas aeruginosa, considerado o primeiro antibiótico conhecido.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Emmerich &amp; Löw</span>
+        <a class="ev-link" href="https://en.wikipedia.org/wiki/Pyocyanase" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Wikipedia</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="16">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1902</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Conceito de ligação peptídica</h3>
+      <p class="ev-summary">Emil Fischer propõe os termos &quot;dipeptídeo&quot;/&quot;tripeptídeo&quot; e o conceito de ligação peptídica, base para entender a estrutura da futura glutationa.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Emil Fischer</span>
+        <a class="ev-link" href="https://www.nobelprize.org/prizes/chemistry/1902/fischer/biographical/" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Nobel Prize</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="17">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1908</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Grupos sulfidrila redutores</h3>
+      <p class="ev-summary">Heffter discute que grupos sulfidrila (tiol) seriam responsáveis pelas propriedades redutoras das células.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Heffter</span>
+        <a class="ev-link" href="https://doi.org/10.1016/S0065-2911(08)60031-4" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI (revisão de Penninckx &amp; Elskens, 1993)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="18">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1911</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Reação do nitroprussiato</h3>
+      <p class="ev-summary">Arnold estuda a reação do nitroprussiato em tecidos animais, relacionada à detecção de grupos tiol.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Arnold</span>
+        <a class="ev-link" href="https://doi.org/10.1016/S0065-2911(08)60031-4" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI (revisão de Penninckx &amp; Elskens, 1993)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="biotecnologia" data-i="19">
+    <div class="ev-dot" style="--c:#7e22ce"></div>
+    <div class="ev-card" style="--c:#7e22ce; --bg:#faf5ff">
+      <div class="ev-year">1914–1918</div>
+      <div class="ev-tag" style="color:#7e22ce; background:#faf5ff">Biotecnologia</div>
+      <h3 class="ev-title">Processo ABE (acetona-butanol-etanol)</h3>
+      <p class="ev-summary">Weizmann desenvolve a produção de acetona a partir de amido usando Clostridium acetobutylicum, usada na fabricação de cordite na 1ª Guerra Mundial.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Chaim Weizmann</span>
+        <a class="ev-link" href="https://en.wikipedia.org/wiki/Acetone%E2%80%93butanol%E2%80%93ethanol_fermentation" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Wikipedia</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="20">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1921</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Isolamento e nomeação da glutationa</h3>
+      <p class="ev-summary">Hopkins isola e nomeia a &quot;glutationa&quot; (GSH), propondo inicialmente que seria um dipeptídeo de glutamato e cisteína.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Frederick G. Hopkins</span>
+        <a class="ev-link" href="https://doi.org/10.1042/bj0150286" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="fermentacao" data-i="21">
+    <div class="ev-dot" style="--c:#c2410c"></div>
+    <div class="ev-card" style="--c:#c2410c; --bg:#fff7ed">
+      <div class="ev-year">1923</div>
+      <div class="ev-tag" style="color:#c2410c; background:#fff7ed">Fermentações</div>
+      <h3 class="ev-title">Primeira fábrica de ácido cítrico</h3>
+      <p class="ev-summary">Inauguração da primeira planta industrial de produção de ácido cítrico por fermentação de Aspergillus niger.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Pfizer</span>
+        <a class="ev-link" href="https://doi.org/10.1186/s40694-018-0054-5" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI (revisão histórica)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="22">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1923</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Estrutura provável: γ-glutamilcisteína</h3>
+      <p class="ev-summary">Quastel, Stewart &amp; Tunnicliffe reúnem evidências de que a estrutura mais provável da GSH seria γ-glutamilcisteína.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Quastel, Stewart &amp; Tunnicliffe</span>
+        <a class="ev-link" href="https://doi.org/10.1016/0968-0004(88)90148-X" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI (revisão de Meister, 1988)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="23">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1925</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Síntese de dipeptídeo análogo</h3>
+      <p class="ev-summary">Stewart &amp; Tunnicliffe sintetizam quimicamente um dipeptídeo com propriedades semelhantes às da glutationa natural.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Stewart &amp; Tunnicliffe</span>
+        <a class="ev-link" href="https://doi.org/10.1016/0968-0004(88)90148-X" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI (revisão de Meister, 1988)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="24">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1927</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Isolamento em larga escala</h3>
+      <p class="ev-summary">Johnson &amp; Voegtlin e Hunter &amp; Eagles isolam GSH em larga escala (&gt;1000 kg de levedura) e sugerem que ela não seria um simples dipeptídeo.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Johnson &amp; Voegtlin; Hunter &amp; Eagles</span>
+        <a class="ev-link" href="https://doi.org/10.1016/0968-0004(88)90148-X" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI (revisão de Meister, 1988)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="biotecnologia" data-i="25">
+    <div class="ev-dot" style="--c:#7e22ce"></div>
+    <div class="ev-card" style="--c:#7e22ce; --bg:#faf5ff">
+      <div class="ev-year">1928</div>
+      <div class="ev-tag" style="color:#7e22ce; background:#faf5ff">Biotecnologia</div>
+      <h3 class="ev-title">Descoberta da penicilina</h3>
+      <p class="ev-summary">Fleming descobre a penicilina ao observar a contaminação de uma cultura de Staphylococcus aureus pelo bolor Penicillium.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Alexander Fleming</span>
+        <a class="ev-link" href="https://www.britannica.com/biography/Alexander-Fleming" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Britannica</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="26">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1928–1929</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Glutationa em forma cristalina</h3>
+      <p class="ev-summary">Kendall e colaboradores realizam 47 preparações de glutationa a partir de levedura, obtendo-a pela primeira vez em forma cristalina.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Kendall et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1126/science.71.1849.589" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="27">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1929</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Correção para estrutura tripeptídica</h3>
+      <p class="ev-summary">Descoberta da glicina na molécula corrige a estrutura da GSH para o tripeptídeo γ-glutamil-cisteinil-glicina.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Kendall et al.; Hopkins; Pirie &amp; Pinhey; Harris</span>
+        <a class="ev-link" href="https://doi.org/10.1126/science.71.1849.589" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="28">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1930</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Grupo carboxila livre da glicina</h3>
+      <p class="ev-summary">Nicolet e Grassmann et al. mostram que o grupo carboxila da glicina está livre na molécula de GSH.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Nicolet; Grassmann et al.</span>
+        <a class="ev-link" href="https://www.sciencedirect.com/science/article/pii/S0021925818770634" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>ScienceDirect</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="29">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">Década de 1930</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Glutationa redutase</h3>
+      <p class="ev-summary">Primeira observação da enzima glutationa redutase, que mantém a GSH em sua forma reduzida.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">—</span>
+        <a class="ev-link" href="https://doi.org/10.1146/annurev.bi.52.070183.003431" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI (revisão de Meister &amp; Anderson, 1983)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="30">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1932</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Método carbobenzoxi</h3>
+      <p class="ev-summary">Bergmann &amp; Zervas desenvolvem o método carbobenzoxi de síntese peptídica, usado depois na síntese total da glutationa.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Bergmann &amp; Zervas</span>
+        <a class="ev-link" href="https://doi.org/10.1146/annurev.bi.52.070183.003431" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI (revisão de Meister &amp; Anderson, 1983)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="31">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1934</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Ácido glutâmico no terminal N</h3>
+      <p class="ev-summary">Gurin &amp; Clark confirmam que o ácido glutâmico ocupa a posição N-terminal da GSH.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Gurin &amp; Clark</span>
+        <a class="ev-link" href="https://doi.org/10.1146/annurev.bi.52.070183.003431" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI (revisão de Meister &amp; Anderson, 1983)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="32">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1935</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Primeira síntese total da glutationa</h3>
+      <p class="ev-summary">Harington &amp; Mead realizam a primeira síntese química completa da glutationa, confirmando a estrutura tripeptídica γ-Glu-Cys-Gly.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Harington &amp; Mead</span>
+        <a class="ev-link" href="https://doi.org/10.1042/bj0291602" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="33">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1936</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Segunda síntese independente</h3>
+      <p class="ev-summary">du Vigneaud &amp; Miller obtêm uma segunda síntese independente da glutationa, confirmando os resultados de Harington &amp; Mead.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">du Vigneaud &amp; Miller</span>
+        <a class="ev-link" href="https://doi.org/10.1016/S0021-9258(18)74621-8" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="34">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1944</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Radiação e grupos tiol</h3>
+      <p class="ev-summary">Guzman-Barron postula que radiações ionizantes oxidam rapidamente os grupos tiol celulares, incluindo a GSH.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Guzman-Barron</span>
+        <a class="ev-link" href="https://doi.org/10.1146/annurev.bi.52.070183.003431" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI (revisão de Meister &amp; Anderson, 1983)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="35">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1951</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Sistema glioxalase</h3>
+      <p class="ev-summary">Racker descreve o sistema glioxalase, dependente de GSH, envolvido na desintoxicação de metilglioxal.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Efraim Racker</span>
+        <a class="ev-link" href="https://doi.org/10.1016/S0021-9258(18)56017-8" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="36">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1961</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Glutationa S-transferases</h3>
+      <p class="ev-summary">Identificação das enzimas glutationa S-transferases, hoje centrais na desintoxicação celular.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">—</span>
+        <a class="ev-link" href="https://en.wikipedia.org/wiki/Glutathione_S-transferase" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Wikipedia</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="biotecnologia" data-i="37">
+    <div class="ev-dot" style="--c:#7e22ce"></div>
+    <div class="ev-card" style="--c:#7e22ce; --bg:#faf5ff">
+      <div class="ev-year">Anos 1960</div>
+      <div class="ev-tag" style="color:#7e22ce; background:#faf5ff">Biotecnologia</div>
+      <h3 class="ev-title">Proteína unicelular (SCP)</h3>
+      <p class="ev-summary">Início da produção industrial de proteína unicelular a partir de resíduos, usando linhagens geneticamente modificadas.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">—</span>
+        <a class="ev-link" href="https://en.wikipedia.org/wiki/Single-cell_protein" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Wikipedia</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="38">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1976</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Descoberta da glutaredoxina</h3>
+      <p class="ev-summary">Holmgren descobre a glutaredoxina em estudos com mutantes de tiorredoxina de E. coli infectados por fago T7.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Arne Holmgren</span>
+        <a class="ev-link" href="https://doi.org/10.1073/pnas.73.7.2275" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="biorrefinaria" data-i="39">
+    <div class="ev-dot" style="--c:#0f766e"></div>
+    <div class="ev-card" style="--c:#0f766e; --bg:#f0fdfa">
+      <div class="ev-year">1978</div>
+      <div class="ev-tag" style="color:#0f766e; background:#f0fdfa">Biorrefinarias</div>
+      <h3 class="ev-title">Criação da IEA Bioenergy</h3>
+      <p class="ev-summary">Estabelecido o acordo internacional de colaboração em bioenergia da Agência Internacional de Energia.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">IEA</span>
+        <a class="ev-link" href="https://www.ieabioenergy.com/" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Site oficial</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="40">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">Final dos anos 1970</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Triagem sistemática de GSH em micro-organismos</h3>
+      <p class="ev-summary">Kosower e colaboradores iniciam a triagem sistemática da ocorrência de GSH em micro-organismos usando a técnica de bromobimanos.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Kosower e colaboradores</span>
+        <a class="ev-link" href="https://doi.org/10.1016/S0065-2911(08)60031-4" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI (revisão de Penninckx &amp; Elskens, 1993)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="biotecnologia" data-i="41">
+    <div class="ev-dot" style="--c:#7e22ce"></div>
+    <div class="ev-card" style="--c:#7e22ce; --bg:#faf5ff">
+      <div class="ev-year">1979</div>
+      <div class="ev-tag" style="color:#7e22ce; background:#faf5ff">Biotecnologia</div>
+      <h3 class="ev-title">DNA recombinante na indústria</h3>
+      <p class="ev-summary">Introdução de proteínas heterólogas e anticorpos monoclonais produzidos via tecnologia de DNA recombinante.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">—</span>
+        <a class="ev-link" href="https://en.wikipedia.org/wiki/Recombinant_DNA" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Wikipedia</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="42">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1983</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Revisão de referência sobre GSH</h3>
+      <p class="ev-summary">Meister &amp; Anderson publicam a revisão de referência &quot;Glutathione&quot;, consolidando décadas de pesquisa bioquímica.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Meister &amp; Anderson</span>
+        <a class="ev-link" href="https://doi.org/10.1146/annurev.bi.52.070183.003431" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="43">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1984</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Transformação de leveduras via gene GSH1</h3>
+      <p class="ev-summary">Ito, Murata &amp; Kimura descrevem método de transformação de células intactas de levedura usando plasmídeo com o gene GSH1 (γ-glutamilcisteína sintetase).</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Ito, Murata &amp; Kimura</span>
+        <a class="ev-link" href="https://doi.org/10.1080/00021369.1984.10866161" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="44">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1988</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Centenário da descoberta da GSH</h3>
+      <p class="ev-summary">Meister publica &quot;On the discovery of glutathione&quot;, revisão histórica no centenário da descoberta do philothion por de Rey-Pailhade.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Alton Meister</span>
+        <a class="ev-link" href="https://doi.org/10.1016/0968-0004(88)90148-X" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="biorrefinaria" data-i="45">
+    <div class="ev-dot" style="--c:#0f766e"></div>
+    <div class="ev-card" style="--c:#0f766e; --bg:#f0fdfa">
+      <div class="ev-year">1992</div>
+      <div class="ev-tag" style="color:#0f766e; background:#f0fdfa">Biorrefinarias</div>
+      <h3 class="ev-title">Agenda 21 (Rio-92)</h3>
+      <p class="ev-summary">Adoção da Agenda 21 na Conferência das Nações Unidas sobre Meio Ambiente e Desenvolvimento, no Rio de Janeiro.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">ONU</span>
+        <a class="ev-link" href="https://sustainabledevelopment.un.org/outcomedocuments/agenda21" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>ONU (documento oficial)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="46">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">1993</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Metabolismo da GSH em micro-organismos</h3>
+      <p class="ev-summary">Penninckx &amp; Elskens publicam ampla revisão sobre metabolismo e funções da glutationa em micro-organismos.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Penninckx &amp; Elskens</span>
+        <a class="ev-link" href="https://doi.org/10.1016/S0065-2911(08)60031-4" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="biorrefinaria" data-i="47">
+    <div class="ev-dot" style="--c:#0f766e"></div>
+    <div class="ev-card" style="--c:#0f766e; --bg:#f0fdfa">
+      <div class="ev-year">1997</div>
+      <div class="ev-tag" style="color:#0f766e; background:#f0fdfa">Biorrefinarias</div>
+      <h3 class="ev-title">&quot;Biorrefinaria verde&quot;</h3>
+      <p class="ev-summary">Definição do termo &quot;biorrefinaria verde&quot; (green biorefinery), voltado ao processamento de biomassa úmida.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">—</span>
+        <a class="ev-link" href="https://doi.org/10.1007/s00253-003-1537-7" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI (Kamm &amp; Kamm)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="biorrefinaria" data-i="48">
+    <div class="ev-dot" style="--c:#0f766e"></div>
+    <div class="ev-card" style="--c:#0f766e; --bg:#f0fdfa">
+      <div class="ev-year">2000</div>
+      <div class="ev-tag" style="color:#0f766e; background:#f0fdfa">Biorrefinarias</div>
+      <h3 class="ev-title">Lei alemã de energia renovável</h3>
+      <p class="ev-summary">Aprovação da Erneuerbare-Energien-Gesetz (EEG), impulsionando biocombustíveis e biorrefinarias na Alemanha.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Alemanha</span>
+        <a class="ev-link" href="https://en.wikipedia.org/wiki/Renewable_Energy_Sources_Act" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Wikipedia</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="biorrefinaria" data-i="49">
+    <div class="ev-dot" style="--c:#0f766e"></div>
+    <div class="ev-card" style="--c:#0f766e; --bg:#f0fdfa">
+      <div class="ev-year">2002</div>
+      <div class="ev-tag" style="color:#0f766e; background:#f0fdfa">Biorrefinarias</div>
+      <h3 class="ev-title">Joanesburgo e planta de PLA</h3>
+      <p class="ev-summary">Cúpula Mundial de Joanesburgo atualiza a Agenda 21; início da operação comercial da planta de PLA da Cargill Dow em Blair, Nebraska.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">ONU; Cargill Dow</span>
+        <a class="ev-link" href="https://en.wikipedia.org/wiki/NatureWorks" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Wikipedia</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="biorrefinaria" data-i="50">
+    <div class="ev-dot" style="--c:#0f766e"></div>
+    <div class="ev-card" style="--c:#0f766e; --bg:#f0fdfa">
+      <div class="ev-year">2004</div>
+      <div class="ev-tag" style="color:#0f766e; background:#f0fdfa">Biorrefinarias</div>
+      <h3 class="ev-title">Princípios das biorrefinarias</h3>
+      <p class="ev-summary">Kamm &amp; Kamm publicam &quot;Principles of biorefineries&quot;, artigo fundador do conceito moderno de biorrefinaria.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Kamm &amp; Kamm</span>
+        <a class="ev-link" href="https://doi.org/10.1007/s00253-003-1537-7" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="51">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2006</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Descrição de Spathaspora passalidarum</h3>
+      <p class="ev-summary">Nguyen, Suh, Marshall &amp; Blackwell descrevem a nova espécie, isolada do intestino do besouro Odontotaenius disjunctus (EUA), já reconhecida como fermentadora de xilose.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Nguyen, Suh, Marshall &amp; Blackwell</span>
+        <a class="ev-link" href="https://doi.org/10.1016/j.mycres.2006.07.002" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="biorrefinaria" data-i="52">
+    <div class="ev-dot" style="--c:#0f766e"></div>
+    <div class="ev-card" style="--c:#0f766e; --bg:#f0fdfa">
+      <div class="ev-year">2007</div>
+      <div class="ev-tag" style="color:#0f766e; background:#f0fdfa">Biorrefinarias</div>
+      <h3 class="ev-title">Task 42 de Biorrefinarias</h3>
+      <p class="ev-summary">Estabelecimento da Task 42 de Biorrefinarias dentro da IEA Bioenergy, reunindo países para padronizar o conceito.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">IEA Bioenergy</span>
+        <a class="ev-link" href="https://www.ieabioenergy.com/wp-content/uploads/2013/10/Task-42-Booklet.pdf" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>Relatório oficial (PDF)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="biorrefinaria" data-i="53">
+    <div class="ev-dot" style="--c:#0f766e"></div>
+    <div class="ev-card" style="--c:#0f766e; --bg:#f0fdfa">
+      <div class="ev-year">2009</div>
+      <div class="ev-tag" style="color:#0f766e; background:#f0fdfa">Biorrefinarias</div>
+      <h3 class="ev-title">Classificação de biorrefinarias</h3>
+      <p class="ev-summary">Cherubini et al. propõem uma abordagem comum de classificação para sistemas de biorrefinaria, adotada pela IEA Bioenergy Task 42.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Cherubini et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1002/bbb.172" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="gsh" data-i="54">
+    <div class="ev-dot" style="--c:#15803d"></div>
+    <div class="ev-card" style="--c:#15803d; --bg:#f0fdf4">
+      <div class="ev-year">2009</div>
+      <div class="ev-tag" style="color:#15803d; background:#f0fdf4">Glutationa (GSH)</div>
+      <h3 class="ev-title">Funções protetoras e biossíntese da GSH</h3>
+      <p class="ev-summary">Forman, Zhang &amp; Rinna revisam as funções protetoras, a medição e a biossíntese da glutationa.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Forman, Zhang &amp; Rinna</span>
+        <a class="ev-link" href="https://doi.org/10.1016/j.mam.2008.08.006" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="55">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2012</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Co-fermentação de glicose, xilose e celobiose</h3>
+      <p class="ev-summary">Long et al. demonstram que S. passalidarum co-fermenta simultaneamente glicose, xilose e celobiose.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Long et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1128/AEM.00374-12" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="56">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2012</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Fermentação anaeróbia de xilose</h3>
+      <p class="ev-summary">Hou demonstra a fermentação anaeróbia eficiente de xilose por S. passalidarum.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Hou</span>
+        <a class="ev-link" href="https://doi.org/10.1007/s00253-011-3694-4" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="57">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2016</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Gene XYL1.2</h3>
+      <p class="ev-summary">Cadete et al. identificam o gene XYL1.2 de S. passalidarum como chave para a fermentação eficiente de xilose, inclusive quando transferido para S. cerevisiae recombinante.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Cadete et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1186/s13068-016-0570-6" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="58">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2017</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Primeiro etanol 2G com bagaço de cana</h3>
+      <p class="ev-summary">Grupo da UFSC realiza o primeiro processo de etanol de 2ª geração a partir de bagaço de cana usando S. passalidarum.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Nakanishi et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1002/bit.26357" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="59">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2019</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Contaminação bacteriana</h3>
+      <p class="ev-summary">Primeiro estudo sobre contaminação de cultivos de S. passalidarum por Lactobacillus fermentum.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Collograi et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1007/s00253-019-09779-y" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="60">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2020</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Processo Melle-Boinot</h3>
+      <p class="ev-summary">Neitzel et al. mostram que o processo Melle-Boinot (reciclo de células) melhora o desempenho da fermentação por S. passalidarum em cerca de 32%, sem modificação genética.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Neitzel et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1016/j.renene.2020.07.027" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="61">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2020</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Potencial redox e kLa</h3>
+      <p class="ev-summary">Bonan, Soares et al. mostram que otimizar potencial redox e kLa dobra a produtividade da fermentação de xilose por S. passalidarum.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Bonan et al.; Soares et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1007/s00449-020-02344-2" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="62">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2020</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Modelo cinético dependente de temperatura</h3>
+      <p class="ev-summary">Biazi et al. identificam ácido acético e furfural como principais inibidores e propõem o primeiro modelo cinético dependente de temperatura para o processo.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Biazi et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1016/j.bej.2020.107586" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="63">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2021</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Plataforma de biorrefinaria</h3>
+      <p class="ev-summary">S. passalidarum é consolidada como plataforma de biorrefinaria, produzindo simultaneamente etanol, xilitol e proteína unicelular a partir de bagaço de cana.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Bonan et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1007/s12155-021-10255-7" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="64">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2021</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Desacetilação do bagaço</h3>
+      <p class="ev-summary">Lima et al. mostram que a desacetilação do bagaço de cana reduz a toxicidade do hidrolisado para S. passalidarum.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Lima et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1007/s12155-020-10243-3" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="65">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2021</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Comparação com S. cerevisiae recombinante</h3>
+      <p class="ev-summary">Pereira et al. comparam S. passalidarum com S. cerevisiae recombinante na integração da produção de etanol 1G e 2G.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Pereira et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1093/femsyr/foab048" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="66">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2021</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Mini-revisão e modelagem dinâmica</h3>
+      <p class="ev-summary">Martínez-Jimenez et al. publicam mini-revisão sobre o potencial de S. passalidarum e um modelo dinâmico do processo fermentativo.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Martínez-Jimenez et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1007/s12155-021-10257-5" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI (mini-revisão)</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="67">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2021</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Secretoma da contaminação bacteriana</h3>
+      <p class="ev-summary">Collograi et al. analisam o secretoma durante a contaminação bacteriana em processo Melle-Boinot com S. passalidarum.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Collograi et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1093/femsyr/foab014" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="68">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2022</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Metabolômica da tolerância a inibidores</h3>
+      <p class="ev-summary">Lima et al. usam metabolômica para revelar os mecanismos que permitem a S. passalidarum superar inibidores do hidrolisado hemicelulósico.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Lima et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1007/s00253-022-11987-y" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="69">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2022</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Transcriptoma e metabolismo de glutationa/enxofre</h3>
+      <p class="ev-summary">Neitzel et al. usam RNA-seq para identificar genes-alvo em S. passalidarum, incluindo vias do metabolismo de glutationa e enxofre — base da atual investigação sobre produção de GSH por essa levedura.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Neitzel et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1016/j.renene.2022.10.108" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="70">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2022</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Imobilização em alginato de cálcio</h3>
+      <p class="ev-summary">da Silveira et al. imobilizam S. passalidarum em alginato de cálcio visando a produção de etanol de 2ª geração.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">da Silveira et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1007/s12155-021-10309-w" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="71">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2023</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Imobilização no próprio bagaço de cana</h3>
+      <p class="ev-summary">Soares et al. mostram que imobilizar S. passalidarum diretamente no bagaço de cana eleva os rendimentos de etanol 2G.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Soares et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1007/s12155-023-10634-2" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="72">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2025</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Engenharia evolutiva e mutagênese</h3>
+      <p class="ev-summary">da Silveira et al. combinam engenharia evolutiva e mutagênese (UV/EMS) para gerar cepas de S. passalidarum com ~50% mais produção de etanol.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">da Silveira et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1016/j.biombioe.2025.107885" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="73">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">2025</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Talo de tabaco como novo substrato</h3>
+      <p class="ev-summary">Santana et al. avaliam pré-tratamento alcalino e hidrólise enzimática de resíduos de talo de tabaco para produção de etanol 2G com S. passalidarum.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Santana et al.</span>
+        <a class="ev-link" href="https://doi.org/10.1007/s12649-025-03017-5" target="_blank" rel="noopener noreferrer">
+         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+         <span>DOI</span>
+       </a>
+      </div>
+    </div>
+  </li>
+
+  <li class="ev" data-theme="spathaspora" data-i="74">
+    <div class="ev-dot" style="--c:#be123c"></div>
+    <div class="ev-card" style="--c:#be123c; --bg:#fff1f2">
+      <div class="ev-year">Em curso (2025→)</div>
+      <div class="ev-tag" style="color:#be123c; background:#fff1f2">Spathaspora passalidarum</div>
+      <h3 class="ev-title">Produção de glutationa por S. passalidarum</h3>
+      <p class="ev-summary">Pesquisa de doutorado em andamento investiga a produção de GSH por S. passalidarum, explorando a via de metabolismo de glutationa/enxofre identificada no transcriptoma de 2022.</p>
+      <div class="ev-footer">
+        <span class="ev-authors">Pesquisa de doutorado em andamento</span>
+        <span class="ev-link ev-link--disabled">Sem publicação (em andamento)</span>
+      </div>
+    </div>
+  </li>
+  </ul>
+  <div class="empty-state" id="empty-state">Nenhum marco encontrado com esse filtro/busca.</div>
+</main>
+
+<footer>
+  Compilado a partir da bibliografia de referência do projeto e de fontes complementares verificadas via busca. Clique nos temas para filtrar ou use a busca acima.
+</footer>
+
+<script>
+  const buttons = document.querySelectorAll(".filter-btn");
+  const items = document.querySelectorAll(".ev");
+  const searchInput = document.getElementById("search");
+  const emptyState = document.getElementById("empty-state");
+  let activeTheme = "all";
+
+  function applyFilters() {
+    const q = searchInput.value.trim().toLowerCase();
+    let visibleCount = 0;
+    items.forEach(item => {
+      const theme = item.getAttribute("data-theme");
+      const text = item.textContent.toLowerCase();
+      const themeMatch = activeTheme === "all" || theme === activeTheme;
+      const searchMatch = !q || text.includes(q);
+      const show = themeMatch && searchMatch;
+      item.classList.toggle("hidden", !show);
+      if (show) visibleCount++;
+    });
+    emptyState.style.display = visibleCount === 0 ? "block" : "none";
+  }
+
+  buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      buttons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeTheme = btn.getAttribute("data-theme");
+      applyFilters();
+    });
+  });
+
+  searchInput.addEventListener("input", applyFilters);
+</script>
+
+</body>
+</html>
