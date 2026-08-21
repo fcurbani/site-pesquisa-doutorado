@@ -10,6 +10,7 @@ const SITE_MENU = [
     { id: "projeto-pergunta", label: "Pergunta", href: "projeto-pergunta.html" },
     { id: "projeto-revisao", label: "Revisão Sistemática", href: "revisao-sistematica.html" },
     { id: "projeto-hipoteses", label: "Hipóteses", href: "projeto-hipoteses.html" },
+    { id: "projeto-objetivos", label: "Objetivos", href: "projeto-objetivos.html" },
     { id: "projeto-metodologia", label: "Metodologia", href: "projeto-metodologia.html" },
     { id: "projeto-resultados", label: "Resultados", href: "projeto-resultados.html" },
     { id: "projeto-publicacoes", label: "Artigos Publicados", href: "projeto-publicacoes.html" },

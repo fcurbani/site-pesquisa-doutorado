@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Objetivos — Fernando Curbani</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <div class="crumb"><a href="index.html">Início</a>
+    <span class="sep">/</span>
+    <a href="projeto-doutorado.html">Projeto Doutorado</a>
+    <span class="sep">/</span>
+    <span class="current">Objetivos</span></div>
+  <div class="hero">
+    <p class="hero-eyebrow">Projeto Doutorado</p>
+    <h1>Objetivos</h1>
+    <p class="subtitle">Um objetivo geral e oito objetivos específicos que percorrem o projeto — da
+    caracterização metabólica basal ao ingrediente em pó estabilizado.</p>
+  </div>
+
+  <section>
+    <h2>Objetivo geral</h2>
+    <div class="card">
+      <p class="body-text" style="font-size:16px; color:var(--ink); font-style:italic; margin-bottom:0;">
+        Avaliar e desenvolver <em>Spathaspora passalidarum</em> como plataforma para a produção de um
+        ingrediente de glutationa a partir de xilose e de hidrolisados lignocelulósicos de baixo custo,
+        cobrindo desde a caracterização metabólica basal até a obtenção e estabilização do produto em pó.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Objetivos específicos</h2>
+    <div class="obj-list">
+      <div class="obj">
+        <span class="obj-num">01</span>
+        <span class="obj-text">Realizar <a href="revisao-sistematica.html">revisão sistemática</a>,
+        segundo PRISMA 2020, do estado da arte sobre produção de glutationa em leveduras não convencionais
+        fermentadoras de pentoses, documentando quantitativamente a lacuna identificada e estratégias de
+        engenharia genética utilizadas em <em>Saccharomyces</em> sp.</span>
+      </div>
+      <div class="obj">
+        <span class="obj-num">02</span>
+        <span class="obj-text">Quantificar, pela primeira vez, o conteúdo intracelular de glutationa
+        (GSH, GSSG e razão GSH/GSSG) de cepas de <em>S. passalidarum</em> — incluindo as cepas
+        provenientes da tese de referência do grupo — em comparação a cepa industrial de
+        <em>S. cerevisiae</em> (ex.: PE-2) como controle positivo.</span>
+      </div>
+      <div class="obj">
+        <span class="obj-num">03</span>
+        <span class="obj-text">Comparar o desempenho em glicose <em>versus</em> xilose, testando a
+        hipótese do acoplamento entre metabolismo de pentoses, disponibilidade de NADPH e estado redox
+        do <em>pool</em> de glutationa.</span>
+      </div>
+      <div class="obj">
+        <span class="obj-num">04</span>
+        <span class="obj-text">Determinar a resposta do <em>pool</em> de glutationa a estresse oxidativo
+        e a inibidores de hidrolisado (furfural, HMF, ácido acético) e à suplementação de enxofre e
+        precursores.</span>
+      </div>
+      <div class="obj">
+        <span class="obj-num">05</span>
+        <span class="obj-text">Construir cepas geneticamente modificadas por superexpressão de
+        <em>GSH1</em> e <em>GSH2</em>, com avaliação do <em>knock-out</em> de <em>ECM38</em>
+        (γ-glutamiltranspeptidase, degradação de GSH), e conduzir evolução adaptativa laboratorial sob
+        pressão oxidativa.</span>
+      </div>
+      <div class="obj">
+        <span class="obj-num">06</span>
+        <span class="obj-text">Desenvolver estratégia de batelada alimentada em biorreator com controle
+        de oxigênio dissolvido e alimentação de precursores, maximizando o acúmulo intracelular sobre
+        hidrolisado hemicelulósico.</span>
+      </div>
+      <div class="obj">
+        <span class="obj-num">07</span>
+        <span class="obj-text">Comparar métodos de lise celular (térmica, autólise enzimática,
+        homogeneização de alta pressão) quanto a rendimento de extração de GSH e preservação da forma
+        reduzida.</span>
+      </div>
+      <div class="obj">
+        <span class="obj-num">08</span>
+        <span class="obj-text">Otimizar a secagem por <em>spray drying</em> com diferentes matrizes de
+        encapsulamento e avaliar a estabilidade do pó ao longo do tempo (<em>shelf-life</em>).</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>Fernando Curbani · Programa de Pós-Graduação em Engenharia de Alimentos · UFSC</footer>
+</div>
+
+<style>
+  .obj-list { display: flex; flex-direction: column; gap: 10px; }
+  .obj {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 14px 18px; display: flex; gap: 14px; align-items: baseline;
+  }
+  .obj-num {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600;
+    color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, white);
+    padding: 2px 8px; border-radius: 5px; flex-shrink: 0;
+  }
+  .obj-text { font-size: 13.5px; line-height: 1.65; color: var(--ink-soft); }
+  .obj-text em { color: var(--ink); }
+  .obj-text a { color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; }
+</style>
+
+<script src="nav.js"></script>
+<script>renderNav('projeto-objetivos');</script>
+</body>
+</html>
