@@ -22,12 +22,15 @@
   <div class="hero">
     <p class="hero-eyebrow">Projeto Doutorado</p>
     <h1>Metodologia — cinco fases</h1>
-    <p class="subtitle">A execução organiza-se em cinco fases sequenciais, com pontos de decisão explícitos entre elas. A pesquisa está atualmente na Fase 0.</p>
+    <p class="subtitle">Cinco fases de execução sequenciais (1 a 5), precedidas pela Fase 0 de revisão
+    e calibração, com pontos de decisão explícitos entre elas. A pesquisa está atualmente na Fase 0 —
+    clique em cada fase para ver as etapas.</p>
   </div>
 
   <section>
     <div class="phase-list" id="phase-list"></div>
   </section>
+
   <style>
     .phase-list { display: flex; flex-direction: column; gap: 0; }
     .phase { display: flex; gap: 16px; position: relative; padding-bottom: 26px; }
@@ -35,35 +38,141 @@
     .phase-rail { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
     .phase-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: #fff; flex-shrink: 0; }
     .phase-line { width: 1.5px; flex: 1; background: var(--line); margin-top: 4px; }
-    .phase-body { flex: 1; padding-top: 2px; }
+    .phase-body { flex: 1; padding-top: 2px; min-width: 0; }
+    .phase-head { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+    .phase-headtext { flex: 1; min-width: 0; }
     .phase-title { font-size: 14.5px; font-weight: 600; margin: 0 0 4px; }
-    .phase-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.6; margin: 0 0 6px; }
-    .phase-deliverable { font-size: 11.5px; color: var(--ink-soft); font-style: italic; }
+    .phase-badge { font-size: 10px; font-weight: 600; color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, white); padding: 1px 8px; border-radius: 20px; margin-left: 8px; vertical-align: middle; letter-spacing: 0.02em; }
+    .phase-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
+    .phase-chevron { width: 16px; height: 16px; color: var(--ink-soft); flex-shrink: 0; margin-top: 3px; transition: transform 0.2s; }
+    .phase.open .phase-chevron { transform: rotate(180deg); }
+    .phase-steps { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease; }
+    .phase.open .phase-steps { grid-template-rows: 1fr; }
+    .phase-steps-inner { overflow: hidden; }
+    .phase-steps-box { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 6px 18px 14px; margin-top: 12px; }
+    .step { display: flex; gap: 11px; padding: 9px 0; align-items: baseline; border-top: 0.5px solid var(--line); }
+    .step:first-child { border-top: none; }
+    .step-num { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 600; color: var(--ink-soft); border: 1px solid var(--line); width: 20px; height: 20px; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .step-text { font-size: 12.5px; line-height: 1.6; color: var(--ink-soft); }
+    .step-text b { color: var(--ink); font-weight: 600; }
+    .step-text em { color: var(--ink); }
+    .phase-note { font-size: 11.5px; color: var(--rust); background: color-mix(in srgb, var(--rust) 8%, white); border: 1px solid color-mix(in srgb, var(--rust) 20%, white); border-radius: 8px; padding: 9px 12px; margin-top: 12px; line-height: 1.55; }
+    .phase-deliverable { font-size: 11.5px; color: var(--ink-soft); font-style: italic; margin: 12px 0 0; }
   </style>
+
   <script>
     const phases = [
-      ["0", "var(--ink-soft)", "Revisão sistemática", "Protocolo PRISMA 2020: pergunta PICO, busca em 8 bases, triagem em duplicata, extração de dados.", "Artigo de revisão + protocolo registrado"],
-      ["1", "var(--accent)", "Screening metabólico basal", "Quantificação de GSH/GSSG em S. passalidarum vs. S. cerevisiae PE-2, em glicose e xilose, por ensaio de reciclagem (DTNB/Tietze).", "Primeira quantificação de GSH na espécie — ponto de decisão go/no-go"],
-      ["2", "var(--amber)", "Indução por estresse e enxofre", "Curva de resposta a sulfato, suplementação de cisteína/glutamato/glicina, exposição a furfural, HMF, ácido acético e H₂O₂.", "Mapa de resposta do pool de GSH"],
-      ["3", "var(--plum)", "Engenharia metabólica e ALE", "Superexpressão de GSH1/GSH2, fusão Gsh1-Gsh2, knock-out de ECM38, e evolução adaptativa laboratorial sob pressão oxidativa.", "Cepa superprodutora selecionada"],
-      ["4", "var(--green)", "Bioprocesso em biorreator", "Batelada alimentada com controle de OD (DO-stat), alimentação de precursores, migração de xilose pura para hidrolisado real.", "Estratégia de fed-batch validada"],
-      ["5", "var(--rust)", "Downstream e estabilização", "Comparação de métodos de lise (térmica, enzimática, alta pressão) e otimização de spray drying com estudo de shelf-life.", "Ingrediente em pó caracterizado"],
+      {
+        num: "0", color: "var(--ink-soft)", current: true,
+        title: "Revisão sistemática e calibração laboratorial (POP 00)",
+        desc: "A revisão PRISMA que confirma a lacuna e os quatro pré-requisitos de bancada que tornam interpretáveis os dados da Fase 1.",
+        deliv: "Artigo de revisão + parâmetros de calibração fechados",
+        note: "Etapa bloqueante: nenhum cultivo da Fase 1 começa antes de o checklist do POP 00 estar totalmente fechado.",
+        steps: [
+          ["Revisão sistemática (PRISMA 2020)", "Pergunta PICO, busca em múltiplas bases, triagem em duplicata e extração de dados — confirma quantitativamente a lacuna na literatura."],
+          ["Curva de crescimento", "Define os 4 tempos de coleta por cepa × meio; amostrar em tempo cronológico fixo compararia fases fisiológicas diferentes, não cepas."],
+          ["Curva DCW × DO₆₀₀", "Fator de conversão próprio de cada cepa (R² ≥ 0,98). É o denominador do desfecho primário e não é transferível entre espécies."],
+          ["Platô de lise", "Nº de ciclos de vórtex que rompe ≥95% das células, por espécie. Lise desigual entre espécies vira artefato de comparação, não achado biológico."],
+          ["Spike-and-recovery", "Recuperação de 85–115% por espécie, auditando as perdas do tubo ao poço. Ensaio DTNB–GR calibrado (R² ≥ 0,99)."],
+        ],
+      },
+      {
+        num: "1", color: "var(--accent)",
+        title: "Screening metabólico basal",
+        desc: "Primeira quantificação de GSH na espécie, comparando <em>S. passalidarum</em> e <em>S. cerevisiae</em> em glicose e xilose. Porta de decisão go/no-go.",
+        deliv: "Primeira quantificação de GSH na espécie — ponto de decisão go/no-go",
+        steps: [
+          ["Delineamento", "4 cepas (teste vs. controle <em>S. cerevisiae</em> PE-2) × fontes de carbono (glicose, xilose, mistura 1:2), em meio rico e definido, com ≥3 réplicas biológicas."],
+          ["Amostragem", "Coletar nos 4 tempos fisiológicos definidos na Fase 0, e não em tempo cronológico fixo."],
+          ["Extração", "Lise por vórtex com <em>beads</em> em SSA gelado (nº de ciclos da Fase 0); <em>spike-and-recovery</em> por espécie é obrigatório."],
+          ["Quantificação", "Ensaio de reciclagem DTNB–GR (Tietze) em microplaca de 96 poços, leitura cinética a 412 nm."],
+          ["Normalização e estatística", "Resultado em mg·g⁻¹ DCW, com comparação estatística (α = 0,05)."],
+          ["Decisão go/no-go", "GSH basal ≥ 50% do de <em>S. cerevisiae</em> PE-2 prioriza o bioprocesso; < 50% realoca peso para engenharia/ALE. Em ambos os casos, o dado basal é publicável."],
+        ],
+      },
+      {
+        num: "2", color: "var(--amber)",
+        title: "Indução por estresse e disponibilidade de enxofre",
+        desc: "Mapeia como enxofre, precursores e estresse oxidativo modulam o <em>pool</em> de glutationa.",
+        deliv: "Mapa de resposta do pool de GSH",
+        steps: [
+          ["Disponibilidade de enxofre", "Meio definido com sulfato crescente (≥5 níveis) e L-cisteína (0–4 mmol·L⁻¹, atenção à citotoxicidade); glutamato e glicina por superfície de resposta."],
+          ["Estresse por inibidores", "Furfural, HMF e ácido acético em doses subletais + hidrolisado real diluído; determinar previamente a CIM de cada inibidor."],
+          ["Estresse oxidativo direto", "H₂O₂ em choques subletais, como referência de indução máxima da resposta antioxidante."],
+          ["Desfechos", "GSH total, GSSG, razão GSH/GSSG e viabilidade. Capturar a resposta bifásica: aumento sob estresse moderado, colapso sob estresse severo."],
+          ["Suporte molecular", "RT-qPCR de <em>GSH1</em>, <em>GSH2</em>, <em>CYS3</em>, <em>GLR1</em> e <em>ECM38</em>, com ortólogos confirmados por homologia e filogenia."],
+        ],
+      },
+      {
+        num: "3", color: "var(--plum)",
+        title: "Engenharia metabólica e evolução adaptativa (ALE)",
+        desc: "Constrói e seleciona a cepa superprodutora, por engenharia genética e por evolução dirigida.",
+        deliv: "Cepa superprodutora selecionada",
+        steps: [
+          ["Ferramental genético (pré-requisito)", "Estabelecer transformação, marcadores (atenção ao códon CTG no clado <em>Candida</em>/<em>Spathaspora</em>), promotores e CRISPR/Cas9 adaptado. Principal risco técnico da tese."],
+          ["Alvos de engenharia", "Superexpressão de <em>GSH1</em> (prioridade), fusão Gsh1-Gsh2, superexpressão de <em>CYS3</em>, <em>knock-out</em> de <em>ECM38</em> e modulação de <em>GLR1</em> (direção conforme o produto: GSH ou GSSG)."],
+          ["Evolução adaptativa (ALE)", "Transferências seriadas sob estresse oxidativo/hidrolisado por 60–100 gerações, com ≥3 populações paralelas independentes."],
+          ["Validação", "Sequenciamento de genoma completo dos isolados evoluídos, identificação de mutações causais e reengenharia no fundo genético parental."],
+        ],
+      },
+      {
+        num: "4", color: "var(--green)",
+        title: "Otimização do bioprocesso",
+        desc: "Escalona a produção em biorreator, buscando o ótimo de oxigênio e migrando para hidrolisado real.",
+        deliv: "Estratégia de fed-batch validada",
+        steps: [
+          ["Escala e instrumentação", "Biorreator de bancada (2–5 L), instrumentado para OD, pH, temperatura e off-gas."],
+          ["Modo de operação", "Batelada alimentada; comparar DO-stat, alimentação exponencial pré-programada e pH-stat."],
+          ["Alimentação de precursores", "Cisteína, glicina e glutamato, com perfil temporal vindo da superfície de resposta da Fase 2."],
+          ["Aeração/OD e pH", "Mapear o ótimo de oxigênio (a respiração favorece a síntese de GSH, mas o excesso desloca o <em>pool</em> para GSSG); pH na faixa 4,5–6,0."],
+          ["Substrato real", "Migração progressiva de xilose pura para hidrolisado de bagaço (com e sem destoxificação), caracterizando cada lote."],
+        ],
+      },
+      {
+        num: "5", color: "var(--rust)",
+        title: "Downstream e estabilização do produto",
+        desc: "Extrai a glutationa e a transforma num pó estável, com <em>shelf-life</em> caracterizado.",
+        deliv: "Ingrediente em pó caracterizado",
+        steps: [
+          ["Lise celular", "Comparar rotas térmica, autólise/enzimática e homogeneização de alta pressão; desfechos: rendimento, razão GSH/GSSG pós-lise e consumo energético. Antioxidante/quelante no tampão."],
+          ["Spray drying e encapsulamento", "Matrizes de parede (maltodextrina DE10/DE19, goma arábica, proteína do soro/caseinato, blendas) por delineamento de mistura; temperatura de saída como variável crítica."],
+          ["Caracterização do pó", "Rendimento, eficiência de encapsulamento, retenção de GSH, umidade, a<sub>w</sub>, higroscopicidade, solubilidade, escoabilidade (Carr), MEV e T<sub>g</sub> (DSC)."],
+          ["Estabilidade (shelf-life)", "Estudo acelerado e em tempo real (25 °C/60% UR e 40 °C/75% UR) ao longo de 0–180 dias; modelagem cinética. A conversão GSH→GSSG é o principal modo de falha."],
+        ],
+      },
     ];
+
     const phaseList = document.getElementById('phase-list');
-    phases.forEach(([num, color, title, desc, deliv], i) => {
+    phases.forEach((p, i) => {
       const el = document.createElement('div');
-      el.className = 'phase';
+      el.className = 'phase' + (p.current ? ' open' : '');
+      const stepsHtml = p.steps.map(([t, d], n) => `
+        <div class="step">
+          <span class="step-num">${n + 1}</span>
+          <div class="step-text"><b>${t}.</b> ${d}</div>
+        </div>`).join('');
+      const noteHtml = p.note ? `<div class="phase-note">${p.note}</div>` : '';
       el.innerHTML = `
         <div class="phase-rail">
-          <div class="phase-dot" style="background:${color}">${num}</div>
+          <div class="phase-dot" style="background:${p.color}">${p.num}</div>
           ${i < phases.length - 1 ? '<div class="phase-line"></div>' : ''}
         </div>
         <div class="phase-body">
-          <p class="phase-title">${title}</p>
-          <p class="phase-desc">${desc}</p>
-          <p class="phase-deliverable">→ ${deliv}</p>
+          <div class="phase-head">
+            <div class="phase-headtext">
+              <p class="phase-title">${p.title}${p.current ? '<span class="phase-badge">atual</span>' : ''}</p>
+              <p class="phase-desc">${p.desc}</p>
+            </div>
+            <svg class="phase-chevron" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="phase-steps"><div class="phase-steps-inner"><div class="phase-steps-box">
+            ${stepsHtml}
+            ${noteHtml}
+            <p class="phase-deliverable">→ ${p.deliv}</p>
+          </div></div></div>
         </div>
       `;
+      el.querySelector('.phase-head').addEventListener('click', () => el.classList.toggle('open'));
       phaseList.appendChild(el);
     });
   </script>
