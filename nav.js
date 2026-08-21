@@ -8,6 +8,7 @@ const SITE_MENU = [
     { id: "projeto-crianca", label: "Explicando para uma criança", href: "projeto-crianca.html" },
     { id: "projeto-resumo", label: "Resumo", href: "projeto-resumo.html" },
     { id: "projeto-pergunta", label: "Pergunta", href: "projeto-pergunta.html" },
+    { id: "projeto-revisao", label: "Revisão Sistemática", href: "revisao-sistematica.html" },
     { id: "projeto-hipoteses", label: "Hipóteses", href: "projeto-hipoteses.html" },
     { id: "projeto-metodologia", label: "Metodologia", href: "projeto-metodologia.html" },
     { id: "projeto-resultados", label: "Resultados", href: "projeto-resultados.html" },
