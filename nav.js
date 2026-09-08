@@ -30,7 +30,7 @@ const SITE_MENU = [
     { id: "metodologia-artigos", label: "Artigos Metodologia", href: "metodologia-artigos.html" },
   ]},
   { id: "pessoal", label: "Projetos Pessoais", href: "projetos-pessoais.html", children: [
-    { id: "utopia-solarpunk", label: "Utopia-solarpunk", href: "utopia-solarpunk.html" },
+    { id: "Livro: Utopia-solarpunk", label: "Utopia-solarpunk", href: "utopia-solarpunk.html" },
   ]},
 ];
 
